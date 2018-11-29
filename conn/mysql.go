@@ -6,7 +6,7 @@
  */
 package conn
 
-import ""
+import "izghua/pkg/zgh/conf"
 
 //type GetMySql struct {
 //
@@ -20,5 +20,6 @@ import ""
 
 func GetMySql() {
 	var mysql conf.Mysql
+	
 }
 
