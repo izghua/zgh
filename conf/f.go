@@ -9,6 +9,15 @@ package conf
 //	DBPassword()
 //}
 
+type SqlParam struct {
+	User string
+	Host string
+	Port string
+	DataBase string
+	UserName string
+	Password string
+}
+
 
 type F interface {
 

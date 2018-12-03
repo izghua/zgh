@@ -16,6 +16,48 @@ import (
 
 var mysql *xorm.Engine
 
+
+//type Mysql interface {
+//	DbUser()
+//	DbHost()
+//	DbPort()
+//	DbDatabase()
+//	DbUserName()
+//	DBPassword()
+//}
+
+
+//
+//func (s *SqlParam)DbHost(host string) options {
+//	return func(p *SqlParam) {
+//		p.Host = host
+//	}
+//}
+//
+//func (s *SqlParam)DbPort(port string) func(*SqlParam) {
+//	return func(p *SqlParam) {
+//		p.Port = port
+//	}
+//}
+//
+//func (s *SqlParam)DbDataBase(dataBase string) func(*SqlParam) {
+//	return func(p *SqlParam) {
+//		p.DataBase = dataBase
+//	}
+//}
+//
+//func (s *SqlParam)DbUserName(userName string) func(*SqlParam) {
+//	return func(p *SqlParam) {
+//		p.UserName = userName
+//	}
+//}
+//
+//func (s *SqlParam)DbPassword(password string) func(*SqlParam) {
+//	return func(p *SqlParam) {
+//		p.Password = password
+//	}
+//}
+
 type SqlParam struct {
 	User string
 	Host string
@@ -25,46 +67,15 @@ type SqlParam struct {
 	Password string
 }
 
+type option func(*SqlParam) interface{}
 
-func DbUser(user string) func(*SqlParam) {
-	return func(p *SqlParam) {
-		p.User = user
+func (p *SqlParam)DbUser(u string) option {
+	return func(p *SqlParam) interface{} {
+		user := p.User
+		p.User = u
+		return user
 	}
 }
-
-func DbHost(host string) func(*SqlParam) {
-	return func(p *SqlParam) {
-		p.Host = host
-	}
-}
-
-func DbPort(port string) func(*SqlParam) {
-	return func(p *SqlParam) {
-		p.Port = port
-	}
-}
-
-func DbDataBase(dataBase string) func(*SqlParam) {
-	return func(p *SqlParam) {
-		p.DataBase = dataBase
-	}
-}
-
-func DbUserName(userName string) func(*SqlParam) {
-	return func(p *SqlParam) {
-		p.UserName = userName
-	}
-}
-
-func DbPassword(password string) func(*SqlParam) {
-	return func(p *SqlParam) {
-		p.Password = password
-	}
-}
-
-
-
-
 
 func InitMysql(options ...func(*SqlParam)) *xorm.Engine {
 	p := &SqlParam{}
@@ -72,6 +83,7 @@ func InitMysql(options ...func(*SqlParam)) *xorm.Engine {
 		option(p)
 	}
 
+	fmt.Println(p,"看看具体实现了啥",options)
 	dataSourceName := p.User + ":" + p.Password + "@/" + p.DataBase + "?charset=utf8"
 	engine, err := xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
