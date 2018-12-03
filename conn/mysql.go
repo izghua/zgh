@@ -25,8 +25,54 @@ type SqlParam struct {
 	Password string
 }
 
-func InitMysql(s *SqlParam) *xorm.Engine {
-	dataSourceName := s.User + ":" + s.Password + "@/" + s.DataBase + "?charset=utf8"
+
+func DbUser(user string) func(*SqlParam) {
+	return func(p *SqlParam) {
+		p.User = user
+	}
+}
+
+func DbHost(host string) func(*SqlParam) {
+	return func(p *SqlParam) {
+		p.Host = host
+	}
+}
+
+func DbPort(port string) func(*SqlParam) {
+	return func(p *SqlParam) {
+		p.Port = port
+	}
+}
+
+func DbDataBase(dataBase string) func(*SqlParam) {
+	return func(p *SqlParam) {
+		p.DataBase = dataBase
+	}
+}
+
+func DbUserName(userName string) func(*SqlParam) {
+	return func(p *SqlParam) {
+		p.UserName = userName
+	}
+}
+
+func DbPassword(password string) func(*SqlParam) {
+	return func(p *SqlParam) {
+		p.Password = password
+	}
+}
+
+
+
+
+
+func InitMysql(options ...func(*SqlParam)) *xorm.Engine {
+	p := &SqlParam{}
+	for _,option := range options {
+		option(p)
+	}
+
+	dataSourceName := p.User + ":" + p.Password + "@/" + p.DataBase + "?charset=utf8"
 	engine, err := xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
 		panic("初始化数据库，创建连接异常:" + err.Error())
