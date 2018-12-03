@@ -9,9 +9,9 @@ package conn
 import (
 	"fmt"
 	"github.com/go-xorm/xorm"
-	"gitlab.yixinonline.org/pkg/bang/conf"
-	"gitlab.yixinonline.org/pkg/bang/util"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var mysql *xorm.Engine
@@ -31,7 +31,7 @@ func InitMysql(s *SqlParam) *xorm.Engine {
 	if err != nil {
 		panic("初始化数据库，创建连接异常:" + err.Error())
 	}
-	engine.TZLocation = conf.TimeLocation
+	engine.TZLocation,_ = time.LoadLocation("Asia/Chongqing")
 	engine.SetMaxIdleConns(3)
 	engine.SetMaxOpenConns(20)
 	engine.SetConnMaxLifetime(0)
@@ -55,7 +55,8 @@ func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
 		if mysql.Ping() != nil {
 			message := fmt.Sprintf("数据库连接失败,已重连%d次", tryTimes)
 			//yrdLog.GetLogger().Error("mysql", message)
-			go util.Alarm(message, util.ALARMALERT)
+			fmt.Println(message)
+			//go util.Alarm(message, util.ALARMALERT)
 		}
 		tryTimes = autoConnectMySQL(tryTimes, maxTryTimes)
 	}
