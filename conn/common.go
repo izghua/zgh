@@ -7,11 +7,4 @@
 package conn
 
 
-type SqlParam struct {
-	User string
-	Host string
-	Port string
-	DataBase string
-	UserName string
-	Password string
-}
+

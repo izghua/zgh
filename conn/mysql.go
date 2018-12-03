@@ -9,6 +9,7 @@ package conn
 import (
 	"fmt"
 	"github.com/go-xorm/xorm"
+	"izghua/pkg/zgh/conf"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -16,68 +17,71 @@ import (
 
 var mysql *xorm.Engine
 
+type SqlParam struct {
+	Host string
+	Port string
+	DataBase string
+	UserName string
+	Password string
+}
 
-//type Mysql interface {
-//	DbUser()
-//	DbHost()
-//	DbPort()
-//	DbDatabase()
-//	DbUserName()
-//	DBPassword()
-//}
+type sp  func(*SqlParam) interface{}
 
-
-//
-//func (s *SqlParam)DbHost(host string) options {
-//	return func(p *SqlParam) {
-//		p.Host = host
-//	}
-//}
-//
-//func (s *SqlParam)DbPort(port string) func(*SqlParam) {
-//	return func(p *SqlParam) {
-//		p.Port = port
-//	}
-//}
-//
-//func (s *SqlParam)DbDataBase(dataBase string) func(*SqlParam) {
-//	return func(p *SqlParam) {
-//		p.DataBase = dataBase
-//	}
-//}
-//
-//func (s *SqlParam)DbUserName(userName string) func(*SqlParam) {
-//	return func(p *SqlParam) {
-//		p.UserName = userName
-//	}
-//}
-//
-//func (s *SqlParam)DbPassword(password string) func(*SqlParam) {
-//	return func(p *SqlParam) {
-//		p.Password = password
-//	}
-//}
-
-
-
-type option func(*SqlParam) interface{}
-
-func (p *SqlParam)DbUser(u string) option {
+func (p *SqlParam)SetDbHost(host string) sp {
 	return func(p *SqlParam) interface{} {
-		user := p.User
-		p.User = u
+		h := p.Host
+		p.Host = host
+		return h
+	}
+}
+
+func (p *SqlParam)SetDbPort(port string) sp {
+	return func(p *SqlParam) interface{} {
+		pt := p.Port
+		p.Port = port
+		return pt
+	}
+}
+
+func (p *SqlParam)SetDbDataBase(dataBase string) sp {
+	return func(p *SqlParam) interface{} {
+		db := p.DataBase
+		p.DataBase = dataBase
+		return db
+	}
+}
+
+
+func (p *SqlParam)SetDbPassword(pwd string) sp {
+	return func(p *SqlParam) interface{} {
+		password := p.Password
+		p.Password = pwd
+		return password
+	}
+}
+
+
+func (p *SqlParam)SetDbUserName(u string) sp {
+	return func(p *SqlParam) interface{} {
+		user := p.UserName
+		p.UserName = u
 		return user
 	}
 }
 
-func InitMysql(options ...func(*SqlParam)) *xorm.Engine {
-	p := &SqlParam{}
+func InitMysql(options ...sp) *xorm.Engine {
+	q := &SqlParam{
+		Host:conf.DBHOST,
+		Port:conf.DBPORT,
+		Password:conf.DBPASSWORD,
+		DataBase:conf.DBDATABASE,
+		UserName:conf.DBUSERNAME,
+	}
 	for _,option := range options {
-		option(p)
+		option(q)
 	}
 
-	fmt.Println(p,"看看具体实现了啥",options)
-	dataSourceName := p.User + ":" + p.Password + "@/" + p.DataBase + "?charset=utf8"
+	dataSourceName := q.UserName + ":" + q.Password + "@/" + q.DataBase + "?charset=utf8"
 	engine, err := xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
 		panic("初始化数据库，创建连接异常:" + err.Error())
