@@ -25,9 +25,9 @@ type SqlParam struct {
 	Password string
 }
 
-type sp  func(*SqlParam) interface{}
+type Sp  func(*SqlParam) interface{}
 
-func (p *SqlParam)SetDbHost(host string) sp {
+func (p *Sp)SetDbHost(host string) Sp {
 	return func(p *SqlParam) interface{} {
 		h := p.Host
 		p.Host = host
@@ -35,7 +35,7 @@ func (p *SqlParam)SetDbHost(host string) sp {
 	}
 }
 
-func (p *SqlParam)SetDbPort(port string) sp {
+func (p *Sp)SetDbPort(port string) Sp {
 	return func(p *SqlParam) interface{} {
 		pt := p.Port
 		p.Port = port
@@ -43,7 +43,7 @@ func (p *SqlParam)SetDbPort(port string) sp {
 	}
 }
 
-func (p *SqlParam)SetDbDataBase(dataBase string) sp {
+func (p *Sp)SetDbDataBase(dataBase string) Sp {
 	return func(p *SqlParam) interface{} {
 		db := p.DataBase
 		p.DataBase = dataBase
@@ -52,8 +52,8 @@ func (p *SqlParam)SetDbDataBase(dataBase string) sp {
 }
 
 
-func (p *SqlParam)SetDbPassword(pwd string) sp {
-	return func(p *SqlParam) interface{} {
+func (p *Sp)SetDbPassword(pwd string) Sp {
+	return  func(p *SqlParam) interface{} {
 		password := p.Password
 		p.Password = pwd
 		return password
@@ -61,15 +61,16 @@ func (p *SqlParam)SetDbPassword(pwd string) sp {
 }
 
 
-func (p *SqlParam)SetDbUserName(u string) sp {
+func (p *Sp)SetDbUserName(u string) Sp {
 	return func(p *SqlParam) interface{} {
-		user := p.UserName
+		name := p.UserName
 		p.UserName = u
-		return user
+		return name
 	}
 }
 
-func InitMysql(options ...sp) *xorm.Engine {
+
+func InitMysql(options ...Sp) *xorm.Engine {
 	q := &SqlParam{
 		Host:conf.DBHOST,
 		Port:conf.DBPORT,

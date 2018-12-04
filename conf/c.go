@@ -6,4 +6,11 @@ const (
 	DBPASSWORD = "Passw0rd"
 	DBUSERNAME = "root"
 	DBDATABASE = "izghua"
+
+	ALARMTYPE1 = "email"
+
+
+	ALARMCRITICAL = "critical"
+	ALARMWARNING  = "warning"
+	ALARMALERT    = "alert"
 )
