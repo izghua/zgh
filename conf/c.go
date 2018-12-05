@@ -7,7 +7,7 @@ const (
 	DBUSERNAME = "root"
 	DBDATABASE = "izghua"
 
-	ALARMTYPE1 = "email"
+	ALARMTYPEONE = "email"
 
 
 	ALARMCRITICAL = "critical"

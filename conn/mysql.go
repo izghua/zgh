@@ -69,7 +69,6 @@ func (p *Sp)SetDbUserName(u string) Sp {
 	}
 }
 
-
 func InitMysql(options ...Sp) *xorm.Engine {
 	q := &SqlParam{
 		Host:conf.DBHOST,
@@ -122,5 +121,3 @@ func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
 func MySQLAutoConnect() {
 	autoConnectMySQL(0, 5)
 }
-
-

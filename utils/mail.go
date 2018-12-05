@@ -20,6 +20,10 @@ type Email struct {
 	Body string
 }
 
+func SetMailUser() {
+
+}
+
 
 
 func SendMail(user, password, host, port, to, subject, body, mailType string) error {
