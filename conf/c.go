@@ -7,10 +7,9 @@ const (
 	DBUSERNAME = "root"
 	DBDATABASE = "izghua"
 
-	ALARMTYPEONE = "email"
-
-
 	ALARMCRITICAL = "critical"
 	ALARMWARNING  = "warning"
 	ALARMALERT    = "alert"
+
+	MailTYPE = "html"
 )

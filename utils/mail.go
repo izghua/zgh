@@ -7,6 +7,7 @@
 package utils
 
 import (
+	"izghua/pkg/zgh/conf"
 	"net/smtp"
 	"strings"
 )
@@ -20,11 +21,12 @@ type EmailParam struct {
 	To EmailType `json:"to"`
 	Subject EmailType `json:"subject"`
 	Body EmailType `json:"body"`
+	MailType EmailType `json:"mail_type"`
 }
 
 var mailParam *EmailParam
 
-var mailAddr,mailPort string
+var mailAddr string
 
 type EM  func(*EmailParam) interface{}
 
@@ -58,7 +60,6 @@ func (et EmailType)IsRight() {
 		panic("有错误,可能不是分号")
 	}
 	mailAddr = arr[0]
-	mailPort = arr[1]
 }
 
 func (ep *EmailParam)SetMailHost(host EmailType) EM {
@@ -71,8 +72,19 @@ func (ep *EmailParam)SetMailHost(host EmailType) EM {
 	}
 }
 
+func (ep *EmailParam)SetMailType(types EmailType) EM {
+	return func(ep *EmailParam) interface{} {
+		ty := ep.MailType
+		types.CheckIsNull()
+		ep.MailType = ty
+		return ty
+	}
+}
+
+
 func (ep *EmailParam)MailInit(options ...EM) *EmailParam {
 	q := &EmailParam{
+		MailType:conf.MailTYPE,
 	}
 	for _,option := range options {
 		option(q)
@@ -82,14 +94,14 @@ func (ep *EmailParam)MailInit(options ...EM) *EmailParam {
 }
 
 
-func SendMail( to, subject, body, mailType string) error {
+func SendMail( to string, subject string, body string) error {
 	user := string(mailParam.User)
 	password := string(mailParam.Password)
 	host := string(mailParam.Host)
 	auth := smtp.PlainAuth("", user, password, mailAddr)
 	var contentType string
-	if mailType == "html" {
-		contentType = "Content-Type: text/" + mailType + "; charset=UTF-8"
+	if mailParam.MailType == "html" {
+		contentType = "Content-Type: text/html; charset=UTF-8"
 		body = "<html><body>" + body + "</body></html>"
 	} else {
 		contentType = "Content-Type: text/plain" + "; charset=UTF-8"
