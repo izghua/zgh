@@ -7,43 +7,68 @@
 package utils
 
 import (
-	"fmt"
-	"izghua/pkg/zgh/conf"
+	"strings"
 )
 
-type AlarmParam struct {
-	TypeOne string
-}
-
-var alarmParam *AlarmParam
-
-type ap func(*AlarmParam) interface{}
-
-func (alarm *AlarmParam)SetType(t string) ap {
-	return func(alarm *AlarmParam) interface{} {
-		ty := alarm.TypeOne
-		alarm.TypeOne = t
-		return ty
-	}
-}
-
+// Define AlarmType to string
+// for to check the params is right
 type AlarmType string
 
+// this are some const params what i defined
+// only this can be to input
 const  (
 	AlarmTypeOne AlarmType = "mail"
 	AlarmTypeTwo AlarmType = "wechat"
 	AlarmTypeThree AlarmType = "message"
 )
 
+type AlarmParam struct {
+	Types AlarmType
+}
+
+var alarmParam *AlarmParam
+
+// Define a closure type to next
+type ap func(*AlarmParam) interface{}
+
+// can use this function to set a new value
+// but to check it is a right type
+func (alarm *AlarmParam)SetType(t AlarmType) ap {
+	return func(alarm *AlarmParam) interface{} {
+		str := strings.Split(string(t),",")
+		if len(str) == 0 {
+			panic("有错误,不能不传入任何值")
+		}
+		for _,types := range str {
+			s := AlarmType(types)
+			s.IsCurrentType()
+		}
+		ty := alarm.Types
+		alarm.Types = t
+		return ty
+	}
+}
+
+// judge it is a right type what i need
+// if is it a wrong type, i must return a panic to above
 func (at AlarmType)IsCurrentType() AlarmType {
-	fmt.Println(at)
+	switch at {
+	case AlarmTypeOne:
+		return at
+	case AlarmTypeTwo:
+		return at
+	case AlarmTypeThree:
+		return at
+	default:
+		panic("有错误")
+	}
+
 	return at
 }
 
-func (alarm *AlarmParam)Options(options ...ap) *AlarmParam {
-
+// implementation value
+func (alarm *AlarmParam)AlarmInit(options ...ap) *AlarmParam {
 	q := &AlarmParam{
-		TypeOne:conf.ALARMTYPEONE,
 	}
 	for _,option := range options {
 		option(q)
@@ -56,6 +81,5 @@ func (alarm *AlarmParam)Options(options ...ap) *AlarmParam {
 
 func Alarm(content string,priority string) {
 
-	b := alarmParam.TypeOne
-	fmt.Println(b,"222333")
+
 }

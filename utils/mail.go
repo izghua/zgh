@@ -11,23 +11,82 @@ import (
 	"strings"
 )
 
-type Email struct {
-	User string
-	Password string
-	Host string
-	To string
-	Subject string
-	Body string
+type EmailType string
+
+type EmailParam struct {
+	User EmailType `json:"user"`
+	Password EmailType `json:"password"`
+	Host EmailType `json:"host"`
+	To EmailType `json:"to"`
+	Subject EmailType `json:"subject"`
+	Body EmailType `json:"body"`
 }
 
-func SetMailUser() {
+var mailParam *EmailParam
 
+var mailAddr,mailPort string
+
+type EM  func(*EmailParam) interface{}
+
+func (et EmailType) CheckIsNull() {
+	if string(et) == "" {
+		panic("不能为空")
+	}
+}
+
+func (ep *EmailParam)SetMailUser(user EmailType) EM {
+	return func(e *EmailParam) interface{} {
+		u := e.User
+		user.CheckIsNull()
+		e.User = user
+		return u
+	}
+}
+
+func (ep *EmailParam)SetMailPwd(pwd EmailType) EM {
+	return func(ep *EmailParam) interface{} {
+		p := ep.Password
+		pwd.CheckIsNull()
+		ep.Password = pwd
+		return p
+	}
+}
+
+func (et EmailType)IsRight() {
+	arr := strings.Split(string(et),":")
+	if len(arr) != 2 {
+		panic("有错误,可能不是分号")
+	}
+	mailAddr = arr[0]
+	mailPort = arr[1]
+}
+
+func (ep *EmailParam)SetMailHost(host EmailType) EM {
+	return func(ep *EmailParam) interface{} {
+		h := ep.Host
+		host.CheckIsNull()
+		host.IsRight()
+		ep.Host = host
+		return h
+	}
+}
+
+func (ep *EmailParam)MailInit(options ...EM) *EmailParam {
+	q := &EmailParam{
+	}
+	for _,option := range options {
+		option(q)
+	}
+	mailParam = q
+	return mailParam
 }
 
 
-
-func SendMail(user, password, host, port, to, subject, body, mailType string) error {
-	auth := smtp.PlainAuth("", user, password, port)
+func SendMail( to, subject, body, mailType string) error {
+	user := string(mailParam.User)
+	password := string(mailParam.Password)
+	host := string(mailParam.Host)
+	auth := smtp.PlainAuth("", user, password, mailAddr)
 	var contentType string
 	if mailType == "html" {
 		contentType = "Content-Type: text/" + mailType + "; charset=UTF-8"
