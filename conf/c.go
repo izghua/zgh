@@ -12,4 +12,15 @@ const (
 	ALARMALERT    = "alert"
 
 	MailTYPE = "html"
+
+)
+
+// Log
+const  (
+	LOGFILEPATH = "./log"
+	LOGFILENAME = "zog"
+	LOGFILESUFFIX = "log"
+	LOGFILEMAXSIZE = 1
+	LOGFILEMAXNSIZE = 1
+	LOGTIMEZONE = "Asia/Chongqing"
 )

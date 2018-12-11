@@ -119,6 +119,7 @@ func Alarm(content string,priority string) {
 		switch AlarmType(a) {
 		case AlarmTypeOne:
 			if alarmParam.MailTo == "" {
+				ZLog("邮件接收者不能为空",priority)
 				panic("邮件接收者不能为空")
 			}
 			err = SendMail(string(alarmParam.MailTo),"报警",content)
