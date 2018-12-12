@@ -7,7 +7,7 @@
 package utils
 
 import (
-	"fmt"
+	"github.com/go-errors/errors"
 	"regexp"
 	"strings"
 )
@@ -24,7 +24,6 @@ const  (
 	AlarmTypeOne AlarmType = "mail"
 	AlarmTypeTwo AlarmType = "wechat"
 	AlarmTypeThree AlarmType = "message"
-	//AlarmMailTo AlarmMailReceive = ""
 )
 
 type AlarmParam struct {
@@ -35,92 +34,108 @@ type AlarmParam struct {
 var alarmParam *AlarmParam
 
 // Define a closure type to next
-type ap func(*AlarmParam) interface{}
+type ap func(*AlarmParam) (interface{},error)
 
 // can use this function to set a new value
 // but to check it is a right type
 func (alarm *AlarmParam)SetType(t AlarmType) ap {
-	return func(alarm *AlarmParam) interface{} {
+	return func(alarm *AlarmParam) (interface{},error) {
 		str := strings.Split(string(t),",")
 		if len(str) == 0 {
-			panic("有错误,不能不传入任何值")
+			ZLog().Error("content","you must input a value")
+			return nil,errors.New("you must input a value")
 		}
 		for _,types := range str {
 			s := AlarmType(types)
-			s.IsCurrentType()
+			_,err := s.IsCurrentType()
+			if err != nil {
+				ZLog().Error("content","the value type is error")
+				return nil,err
+			}
 		}
 		ty := alarm.Types
 		alarm.Types = t
-		return ty
+		return ty,nil
 	}
 }
 
 func (alarm *AlarmParam)SetMailTo(t AlarmMailReceive) ap {
-	return func(alarm *AlarmParam) interface{} {
+	return func(alarm *AlarmParam) (interface{}, error) {
 		to := alarm.MailTo
-		t.CheckIsNull().MustMailFormat()
+		_,err := t.CheckIsNull()
+		if err != nil {
+			return nil,err
+		}
+		_,err = t.MustMailFormat()
+		if err != nil {
+			return nil,err
+		}
 		alarm.MailTo = t
-		return to
+		return to,nil
 	}
 }
 
 // alarm receive account can not null
-func (t AlarmMailReceive)CheckIsNull() AlarmMailReceive {
+func (t AlarmMailReceive)CheckIsNull() (AlarmMailReceive,error) {
 	if len(t) == 0 {
-		panic("不能为空")
+		ZLog().Error("content","value can not be null")
+		return "",errors.New("value can not be null")
 	}
-	return t
+	return t,nil
 }
 
 // alarm receive account must be mail format
-func (t AlarmMailReceive)MustMailFormat() AlarmMailReceive {
+func (t AlarmMailReceive)MustMailFormat() (AlarmMailReceive,error) {
 	if m, _ := regexp.MatchString("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+", string(t)); !m {
-		panic("格式不正确")
+		ZLog().Error("content","value format is not right")
+		return "",errors.New("value format is not right")
 	}
-	return t
+	return t,nil
 }
 
 
 // judge it is a right type what i need
 // if is it a wrong type, i must return a panic to above
-func (at AlarmType)IsCurrentType() AlarmType {
+func (at AlarmType)IsCurrentType() (AlarmType,error) {
 	switch at {
 	case AlarmTypeOne:
-		return at
+		return at,nil
 	case AlarmTypeTwo:
-		return at
+		return at,nil
 	case AlarmTypeThree:
-		return at
+		return at,nil
 	default:
-		panic("有错误")
+		ZLog().Error("content","the alarm type is error")
+		return at,errors.New("the alarm type is error")
 	}
-
-	return at
 }
 
+
 // implementation value
-func (alarm *AlarmParam)AlarmInit(options ...ap) *AlarmParam {
+func (alarm *AlarmParam)AlarmInit(options ...ap) error {
 	q := &AlarmParam{
 	}
 	for _,option := range options {
-		option(q)
+		_,err := option(q)
+		if err != nil {
+			return err
+		}
 	}
 	alarmParam = q
-	return alarmParam
+	return nil
 }
 
 
 
-func Alarm(content string,priority string) {
-	fmt.Println(alarmParam.MailTo,alarmParam.MailTo == "")
+func Alarm(content string) {
 	types := strings.Split(string(alarmParam.Types),",")
 	var err error
 	for _,a := range types {
 		switch AlarmType(a) {
 		case AlarmTypeOne:
 			if alarmParam.MailTo == "" {
-				ZLog("邮件接收者不能为空",priority)
-				panic("邮件接收者不能为空")
+				ZLog().Error("content","邮件接收者不能为空")
+				break
 			}
 			err = SendMail(string(alarmParam.MailTo),"报警",content)
 			break
@@ -130,9 +145,7 @@ func Alarm(content string,priority string) {
 			break
 		}
 		if err != nil {
-			panic(err.Error())
+			ZLog().Error("content","alarm is error,err:" + err.Error())
 		}
 	}
-
-	fmt.Println(alarmParam.Types,"baojing",alarmParam.MailTo)
 }

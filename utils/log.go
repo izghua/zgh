@@ -7,10 +7,10 @@
 package utils
 
 import (
-	"fmt"
+	"errors"
 	"github.com/Penglq/QLog"
 	"izghua/pkg/zgh/conf"
-	"time"
+	"log"
 )
 
 type ZLogParam struct {
@@ -75,7 +75,7 @@ func (zlp *ZLogParam) SetTimeZone(tz string) zp {
 	}
 }
 
-func (zlp *ZLogParam)ZogInit(options ...zp) *ZLogParam {
+func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 	q := &ZLogParam{
 		FilePath:conf.LOGFILEPATH,
 		FileName:conf.LOGFILENAME,
@@ -88,7 +88,7 @@ func (zlp *ZLogParam)ZogInit(options ...zp) *ZLogParam {
 		option(q)
 	}
 	zLogParam = q
-	return zLogParam
+	return nil
 }
 
 
@@ -97,16 +97,15 @@ func (zlp *ZLogParam)ZogInit(options ...zp) *ZLogParam {
 // i just package it
 // you must input content what it is wrong content
 // then you must describe it is type
-func ZLog(content string ,priority string) {
-	fmt.Println(zLogParam,"看日志",time.Now().Format(time.RFC3339))
+func ZLog() QLog.LoggerInterface {
 	if zLogParam == nil {
-		panic("日志木有初始化")
+		log.Fatalf("Zlog not init err %s", errors.New("日志没有初始化"))
 	}
 	l := QLog.GetLogger()
 	l.SetConfig(QLog.INFO, zLogParam.TimeZone,
 		QLog.WithFileOPT(zLogParam.FilePath, zLogParam.FileName, zLogParam.FileSuffix, zLogParam.FileMaxSize,zLogParam.FileMaxNSize),
 		QLog.WithConsoleOPT(),
 	)
-	l.Info("a","有错","b","还是有错","content",content)
+	return l
 }
 

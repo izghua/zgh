@@ -7,6 +7,7 @@
 package utils
 
 import (
+	"errors"
 	"izghua/pkg/zgh/conf"
 	"net/smtp"
 	"strings"
@@ -28,69 +29,91 @@ var mailParam *EmailParam
 
 var mailAddr string
 
-type EM  func(*EmailParam) interface{}
+type EM  func(*EmailParam) (interface{},error)
 
-func (et EmailType) CheckIsNull() {
+func (et EmailType) CheckIsNull() error {
 	if string(et) == "" {
-		panic("不能为空")
+		ZLog().Error("content","value can not be null")
+		return errors.New("value can not be null")
 	}
+	return nil
 }
 
 func (ep *EmailParam)SetMailUser(user EmailType) EM {
-	return func(e *EmailParam) interface{} {
+	return func(e *EmailParam) (interface{},error) {
 		u := e.User
-		user.CheckIsNull()
+		err := user.CheckIsNull()
+		if err != nil {
+			return nil,err
+		}
 		e.User = user
-		return u
+		return u,nil
 	}
 }
 
 func (ep *EmailParam)SetMailPwd(pwd EmailType) EM {
-	return func(ep *EmailParam) interface{} {
+	return func(ep *EmailParam) (interface{},error) {
 		p := ep.Password
-		pwd.CheckIsNull()
+		err := pwd.CheckIsNull()
+		if err != nil {
+			return nil,err
+		}
 		ep.Password = pwd
-		return p
+		return p,nil
 	}
 }
 
-func (et EmailType)IsRight() {
+func (et EmailType)IsRight() error {
 	arr := strings.Split(string(et),":")
 	if len(arr) != 2 {
-		panic("有错误,可能不是分号")
+		ZLog().Error("may be is not semicolon")
+		return errors.New("may be is not semicolon")
 	}
 	mailAddr = arr[0]
+	return nil
 }
 
 func (ep *EmailParam)SetMailHost(host EmailType) EM {
-	return func(ep *EmailParam) interface{} {
+	return func(ep *EmailParam) (interface{},error) {
 		h := ep.Host
-		host.CheckIsNull()
-		host.IsRight()
+		err := host.CheckIsNull()
+		if err != nil {
+			return nil,err
+		}
+		err = host.IsRight()
+		if err != nil {
+			return nil,err
+		}
 		ep.Host = host
-		return h
+		return h,nil
 	}
 }
 
 func (ep *EmailParam)SetMailType(types EmailType) EM {
-	return func(ep *EmailParam) interface{} {
+	return func(ep *EmailParam) (interface{},error) {
 		ty := ep.MailType
-		types.CheckIsNull()
+		err := types.CheckIsNull()
+		if err != nil {
+			return nil,err
+		}
 		ep.MailType = ty
-		return ty
+		return ty,nil
 	}
 }
 
 
-func (ep *EmailParam)MailInit(options ...EM) *EmailParam {
+func (ep *EmailParam)MailInit(options ...EM) error {
 	q := &EmailParam{
 		MailType:conf.MailTYPE,
 	}
 	for _,option := range options {
-		option(q)
+		_,err := option(q)
+		if err != nil {
+			return err
+		}
 	}
 	mailParam = q
-	return mailParam
+	return nil
 }
 
 

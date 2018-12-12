@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/go-xorm/xorm"
 	"izghua/pkg/zgh/conf"
+	"izghua/pkg/zgh/utils"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -69,7 +70,7 @@ func (p *Sp)SetDbUserName(u string) Sp {
 	}
 }
 
-func InitMysql(options ...Sp) *xorm.Engine {
+func InitMysql(options ...Sp) (*xorm.Engine,error){
 	q := &SqlParam{
 		Host:conf.DBHOST,
 		Port:conf.DBPORT,
@@ -84,7 +85,8 @@ func InitMysql(options ...Sp) *xorm.Engine {
 	dataSourceName := q.UserName + ":" + q.Password + "@/" + q.DataBase + "?charset=utf8"
 	engine, err := xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
-		panic("初始化数据库，创建连接异常:" + err.Error())
+		utils.ZLog().Error("mysql","初始化数据库，创建连接异常:"+err.Error())
+		return nil,err
 	}
 	engine.TZLocation,_ = time.LoadLocation("Asia/Chongqing")
 	engine.SetMaxIdleConns(3)
@@ -101,7 +103,7 @@ func InitMysql(options ...Sp) *xorm.Engine {
 			}
 		}
 	}(mysql)
-	return mysql
+	return mysql,nil
 }
 
 func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
@@ -109,9 +111,8 @@ func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
 	if tryTimes <= maxTryTimes {
 		if mysql.Ping() != nil {
 			message := fmt.Sprintf("数据库连接失败,已重连%d次", tryTimes)
-			//yrdLog.GetLogger().Error("mysql", message)
-			fmt.Println(message)
-			//go util.Alarm(message, util.ALARMALERT)
+			utils.ZLog().Error("mysql",message)
+			go utils.Alarm(message)
 		}
 		tryTimes = autoConnectMySQL(tryTimes, maxTryTimes)
 	}
