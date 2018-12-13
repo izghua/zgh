@@ -7,7 +7,7 @@
 package test
 
 import (
-	"izghua/pkg/zgh/utils"
+	"izghua/zgh/utils"
 	"testing"
 )
 

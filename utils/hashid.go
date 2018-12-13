@@ -9,7 +9,7 @@ package utils
 import (
 	"fmt"
 	"github.com/speps/go-hashids"
-	"izghua/pkg/zgh/conf"
+	"izghua/zgh/conf"
 )
 
 type HashIdParams struct {

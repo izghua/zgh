@@ -8,7 +8,7 @@ package utils
 
 import (
 	"errors"
-	"izghua/pkg/zgh/conf"
+	"izghua/zgh/conf"
 	"net/smtp"
 	"strings"
 )

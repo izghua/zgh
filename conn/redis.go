@@ -8,8 +8,8 @@ package conn
 
 import (
 	"github.com/go-redis/redis"
-	"izghua/pkg/zgh/conf"
-	"izghua/pkg/zgh/utils"
+	"izghua/zgh/conf"
+	"izghua/zgh/utils"
 )
 
 type RedisClient struct {
