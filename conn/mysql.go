@@ -9,8 +9,8 @@ package conn
 import (
 	"fmt"
 	"github.com/go-xorm/xorm"
-	"izghua/zgh/conf"
-	"izghua/zgh/utils"
+	"github.com/izghua/zgh/conf"
+	"github.com/izghua/zgh/utils"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"

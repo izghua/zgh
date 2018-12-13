@@ -9,7 +9,7 @@ package utils
 import (
 	"errors"
 	"github.com/Penglq/QLog"
-	"izghua/zgh/conf"
+	"github.com/izghua/zgh/conf"
 	"log"
 )
 

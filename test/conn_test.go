@@ -7,7 +7,7 @@
 package test
 
 import (
-	"izghua/zgh/conn"
+	"github.com/izghua/zgh/conn"
 	"testing"
 )
 
