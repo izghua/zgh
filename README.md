@@ -1,6 +1,6 @@
 # This is a package just for me
 
-- [中文文档](./CN)
+- [中文文档](./CN.md)
 
 ## main
 
