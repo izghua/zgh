@@ -11,8 +11,15 @@ const (
 	ALARMWARNING  = "warning"
 	ALARMALERT    = "alert"
 
-	MailTYPE = "html"
+	MAIlTYPE = "html"
 
+	HASHIDSALT = "salt"
+	HASHIDMINLENGTH = 8
+
+
+	REDISADDR = ""
+	REDISPWD = ""
+	REDISDB = 0
 )
 
 // Log

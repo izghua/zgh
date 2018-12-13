@@ -104,7 +104,7 @@ func (ep *EmailParam)SetMailType(types EmailType) EM {
 
 func (ep *EmailParam)MailInit(options ...EM) error {
 	q := &EmailParam{
-		MailType:conf.MailTYPE,
+		MailType:conf.MAIlTYPE,
 	}
 	for _,option := range options {
 		_,err := option(q)
