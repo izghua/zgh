@@ -10,7 +10,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
 	"github.com/izghua/zgh/conf"
-	"strconv"
 	"time"
 )
 
@@ -100,7 +99,7 @@ func (jp *JwtParam)JwtInit(options ...func(jp *JwtParam) interface{}) error {
 }
 
 
-func CreateToken(userId int) (token string,err error) {
+func CreateToken(userIdString string) (token string,err error) {
 //	iss: jwt签发者
 //	sub: jwt所面向的用户
 //	aud: 接收jwt的一方
@@ -114,7 +113,7 @@ func CreateToken(userId int) (token string,err error) {
 	//claims["exp"] = time.Now().Add(time.Hour * time.Duration(72)).Unix()
 	claims["iat"] = time.Now().Unix()
 	claims["iss"] = jwtParam.DefaultIss
-	claims["sub"] = userId
+	claims["sub"] = userIdString
 	claims["aud"] = jwtParam.DefaultAudience
 	claims["jti"] = Md5(jwtParam.DefaultJti+jwtParam.DefaultIss)
 	tk.Claims = claims
@@ -126,8 +125,6 @@ func CreateToken(userId int) (token string,err error) {
 		return "",err
 	}
 
-	userIdString := strconv.Itoa(userId)
-
 	err = jwtParam.RedisCache.Set(jwtParam.TokenKey+userIdString,tokenString,jwtParam.TokenLife).Err()
 	if err != nil {
 		ZLog().Error("content","token create error","error",err.Error())
@@ -135,5 +132,11 @@ func CreateToken(userId int) (token string,err error) {
 	}
 
 	return tokenString,nil
+}
+
+func ParseToken(token string) {
+
+	//res, err := jwtParam.RedisCache.Get(jwtParam.TokenKey+userIdString).Result()
+
 }
 
