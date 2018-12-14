@@ -7,6 +7,8 @@
 package utils
 
 import (
+	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
 	"github.com/izghua/zgh/conf"
@@ -134,9 +136,65 @@ func CreateToken(userIdString string) (token string,err error) {
 	return tokenString,nil
 }
 
-func ParseToken(token string) {
+func ParseToken(myToken string) (userId string,err error) {
 
-	//res, err := jwtParam.RedisCache.Get(jwtParam.TokenKey+userIdString).Result()
+	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtParam.SecretKey), nil
+	})
+	if err != nil {
+		ZLog().Error("content","parse token has error","error",err.Error())
+		return "",err
+	}
+	claims := token.Claims.(jwt.MapClaims)
 
+	sub,ok := claims["sub"].(string)
+	if !ok {
+		ZLog().Error("content","claims duan yan is error","error",err.Error())
+		return "",errors.New("claims duan yan is error")
+	}
+
+	res, err := jwtParam.RedisCache.Get(jwtParam.TokenKey+sub).Result()
+
+	if err != nil {
+		ZLog().Error("content","get token from redis error","error",err.Error())
+		return "",err
+	}
+
+	if res == "" || res != myToken {
+		ZLog().Error("content","token is invalid","error",err.Error())
+		return "",errors.New("token is invalid")
+	}
+
+	//refresh the token life time
+	err = jwtParam.RedisCache.Set(jwtParam.TokenKey+sub,myToken,jwtParam.TokenLife).Err()
+	if err != nil {
+		ZLog().Error("content","token create error","error",err.Error())
+		return "",err
+	}
+
+	return sub,nil
 }
 
+
+func UnsetToken(myToken string) (bool,error) {
+	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtParam.SecretKey), nil
+	})
+	if err != nil {
+		ZLog().Error("content","parse token has error","error",err.Error())
+		return false,err
+	}
+	claims := token.Claims.(jwt.MapClaims)
+
+	sub,ok := claims["sub"].(string)
+	if !ok {
+		ZLog().Error("content","claims duan yan is error","error",err.Error())
+		return false,errors.New("claims duan yan is error")
+	}
+	err = jwtParam.RedisCache.Del(jwtParam.TokenKey+sub).Err()
+	if err != nil {
+		ZLog().Error("content","unset token has error","error",err.Error())
+		return false,err
+	}
+	return true,nil
+}
