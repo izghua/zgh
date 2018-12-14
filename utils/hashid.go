@@ -7,9 +7,8 @@
 package utils
 
 import (
-	"fmt"
-	"github.com/speps/go-hashids"
 	"github.com/izghua/zgh/conf"
+	"github.com/speps/go-hashids"
 )
 
 type HashIdParams struct {
@@ -48,7 +47,6 @@ func (hd *HashIdParams)HashIdInit(options ...func(*HashIdParams) interface{}) (*
 	hds := hashids.NewData()
 	hds.Salt = hashIdParams.Salt
 	hds.MinLength = hashIdParams.MinLength
-	fmt.Println(hds.MinLength,hds.Salt)
 	h, err := hashids.NewWithData(hds)
 	if err != nil {
 		ZLog().Error("content","hash new with data is error","error",err.Error())

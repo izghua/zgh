@@ -1,5 +1,7 @@
 package conf
 
+import "time"
+
 const (
 	DBHOST = "127.0.0.1"
 	DBPORT = "3306"
@@ -20,6 +22,14 @@ const (
 	REDISADDR = ""
 	REDISPWD = ""
 	REDISDB = 0
+
+	JWTISS = "izghua"
+	JWTAUDIENCE = "zgh"
+	JWTJTI = "izghua"
+	JWTSECRETKEY = "izghua"
+	JWTTOKENKEY = "login:token:"
+	JWTTOKENLIFE = time.Hour * time.Duration(7)
+
 )
 
 // Log

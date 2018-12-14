@@ -12,6 +12,10 @@ import (
 	"github.com/izghua/zgh/utils"
 )
 
+var redisC *RedisClient
+
+//var RedisC1 *redis.Client
+
 type RedisClient struct {
 	Addr string
 	Password string
@@ -43,7 +47,6 @@ func (rc *RedisClient)SetRedisDb(db int) func(*RedisClient) interface{} {
 	}
 }
 
-var redisClient *RedisClient
 
 func (rc *RedisClient)RedisInit(options ...func(*RedisClient) interface{}) (*redis.Client,error) {
 	q := &RedisClient{
@@ -54,12 +57,12 @@ func (rc *RedisClient)RedisInit(options ...func(*RedisClient) interface{}) (*red
 	for _,option := range options {
 		option(q)
 	}
-	redisClient = q
+	redisC = q
 
 	client := redis.NewClient(&redis.Options{
-		Addr:     redisClient.Addr,
-		Password: redisClient.Password, // no password set
-		DB:       redisClient.Db,  // use default DB
+		Addr:     redisC.Addr,
+		Password: redisC.Password, // no password set
+		DB:       redisC.Db,  // use default DB
 	})
 
 	_, err := client.Ping().Result()
@@ -68,6 +71,6 @@ func (rc *RedisClient)RedisInit(options ...func(*RedisClient) interface{}) (*red
 		utils.ZLog().Error("content","redis client ping is error","error",err.Error())
 		return nil,err
 	}
-
+	//RedisC1 = client
 	return client,nil
 }
