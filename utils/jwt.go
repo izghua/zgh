@@ -8,7 +8,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
 	"github.com/izghua/zgh/conf"
