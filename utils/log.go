@@ -8,11 +8,11 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"github.com/Penglq/QLog"
 	"github.com/izghua/zgh/conf"
 	"log"
 	"runtime"
+	"strings"
 )
 
 type ZLogParam struct {
@@ -112,12 +112,11 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 // you must input content what it is wrong content
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
-	funcName,file,_,ok := runtime.Caller(0)
-	fmt.Println(ok,"日志是否正确",funcName,file)
+	funcName,_,_,ok := runtime.Caller(0)
 	if ok {
 		fName := runtime.FuncForPC(funcName).Name()
-		fmt.Println("隔断",fName,"看日志")
-		Zog.SetTextPrefix("method",fName)
+		arrStr := strings.Split(fName,"/")
+		Zog.SetTextPrefix("method",arrStr[len(arrStr)-1])
 	}
 	return Zog
 }
