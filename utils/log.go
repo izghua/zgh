@@ -105,18 +105,22 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 	return nil
 }
 
+func (l *log.Logger) AddTextPrefix(keyvals ...interface{}) {
+	l.textPrefix += format(keyvals...)
+}
+
 // the log is designed by my colleague
 // https://github.com/Penglq/QLog
 // i just package it
 // you must input content what it is wrong content
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
-	funcName,file,_,ok := runtime.Caller(1)
+	funcName,file,_,ok := runtime.Caller(0)
 	fmt.Println(ok,"日志是否正确",funcName,file)
 	if ok {
 		fName := runtime.FuncForPC(funcName).Name()
-		fmt.Println("隔断",fName,"看日志陆军")
-		Zog.AddTextPrefix("method",fName)
+		fmt.Println("隔断",fName,"看日志")
+		Zog.SetTextPrefix("method",fName)
 	}
 	return Zog
 }
