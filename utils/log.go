@@ -100,12 +100,7 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 		QLog.WithFileOPT(zLogParam.FilePath, zLogParam.FileName, zLogParam.FileSuffix, zLogParam.FileMaxSize,zLogParam.FileMaxNSize),
 		QLog.WithConsoleOPT(),
 	)
-	funcName,file,_,ok := runtime.Caller(1)
-	fmt.Println(ok,"日志是否正确",funcName,file)
-	if ok {
-		funcName := runtime.FuncForPC(funcName).Name()
-		l.AddTextPrefix("method",funcName)
-	}
+
 	Zog = l
 	return nil
 }
@@ -116,6 +111,13 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 // you must input content what it is wrong content
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
+	funcName,file,_,ok := runtime.Caller(1)
+	fmt.Println(ok,"日志是否正确",funcName,file)
+	if ok {
+		fName := runtime.FuncForPC(funcName).Name()
+		fmt.Println("隔断",fName,"看日志陆军")
+		Zog.AddTextPrefix("method",fName)
+	}
 	return Zog
 }
 
