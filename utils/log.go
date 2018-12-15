@@ -112,7 +112,7 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 // you must input content what it is wrong content
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
-	funcName,_,_,ok := runtime.Caller(0)
+	funcName,_,_,ok := runtime.Caller(1)
 	if ok {
 		fName := runtime.FuncForPC(funcName).Name()
 		arrStr := strings.Split(fName,"/")
