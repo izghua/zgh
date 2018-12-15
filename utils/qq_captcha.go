@@ -8,8 +8,8 @@ package utils
 
 import (
 	"fmt"
-	"izghua/zgh/conf"
-	"izghua/zgh/request"
+	"github.com/izghua/zgh/conf"
+	"github.com/izghua/zgh/request"
 	"time"
 )
 

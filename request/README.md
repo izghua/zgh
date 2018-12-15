@@ -5,7 +5,7 @@
 - 去掉CurlCommand
 
 ## 使用此包注意事项
-- 必须使用yrdLog包
+- 必须使用Zlog包
 - 其他的可以去github上看或者看request_test文件
 
 
