@@ -8,8 +8,8 @@ package ginmiddleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/izghua/zgh/gin/api"
 	"github.com/izghua/zgh/utils"
-	"izghua/zgh/gin/api"
 	"net/http"
 )
 

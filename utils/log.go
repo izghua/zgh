@@ -77,6 +77,8 @@ func (zlp *ZLogParam) SetTimeZone(tz string) zp {
 	}
 }
 
+var Zog QLog.LoggerInterface
+
 func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 	q := &ZLogParam{
 		FilePath:conf.LOGFILEPATH,
@@ -90,6 +92,21 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 		option(q)
 	}
 	zLogParam = q
+	if zLogParam == nil {
+		log.Fatalf("Zlog not init err %s", errors.New("日志没有初始化 - "))
+	}
+	l := QLog.GetLogger()
+	l.SetConfig(QLog.INFO, zLogParam.TimeZone,
+		QLog.WithFileOPT(zLogParam.FilePath, zLogParam.FileName, zLogParam.FileSuffix, zLogParam.FileMaxSize,zLogParam.FileMaxNSize),
+		QLog.WithConsoleOPT(),
+	)
+	funcName,file,_,ok := runtime.Caller(1)
+	fmt.Println(ok,"日志是否正确",funcName,file)
+	if ok {
+		funcName := runtime.FuncForPC(funcName).Name()
+		l.AddTextPrefix("method",funcName)
+	}
+	Zog = l
 	return nil
 }
 
@@ -99,21 +116,6 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 // you must input content what it is wrong content
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
-	if zLogParam == nil {
-		log.Fatalf("Zlog not init err %s", errors.New("日志没有初始化 - "))
-	}
-	l := QLog.GetLogger()
-	l.SetConfig(QLog.INFO, zLogParam.TimeZone,
-		QLog.WithFileOPT(zLogParam.FilePath, zLogParam.FileName, zLogParam.FileSuffix, zLogParam.FileMaxSize,zLogParam.FileMaxNSize),
-		QLog.WithConsoleOPT(),
-	)
-	funcName,file,_,ok := runtime.Caller(0)
-	fmt.Println(ok,"日志是否正确",funcName,file)
-	if ok {
-		funcName := runtime.FuncForPC(funcName).Name()
-		l.AddTextPrefix("method",funcName)
-	}
-
-	return l
+	return Zog
 }
 
