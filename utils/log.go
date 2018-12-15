@@ -105,9 +105,6 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 	return nil
 }
 
-func (l *log.Logger) AddTextPrefix(keyvals ...interface{}) {
-	l.textPrefix += format(keyvals...)
-}
 
 // the log is designed by my colleague
 // https://github.com/Penglq/QLog
