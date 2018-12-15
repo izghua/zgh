@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/Penglq/QLog"
-	"github.com/izghua/zgh/utils"
 	"io"
 	"io/ioutil"
 	"net"
@@ -19,8 +18,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	//"github.com/pkg/errors"
 
 	"mime/multipart"
 
@@ -119,7 +116,7 @@ func New() *SuperAgent {
 		BasicAuth:         struct{ Username, Password string }{},
 		Debug:             true,
 		CurlCommand:       false,
-		logger:            utils.ZLog(),
+		logger:            QLog.GetLogger(),
 	}
 	// disable keep alives by default, see this issue https://github.com/parnurzeal/gorequest/issues/75
 	s.Transport.DisableKeepAlives = true
