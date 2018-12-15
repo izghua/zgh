@@ -8,9 +8,11 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"github.com/Penglq/QLog"
 	"github.com/izghua/zgh/conf"
 	"log"
+	"runtime"
 )
 
 type ZLogParam struct {
@@ -105,6 +107,13 @@ func ZLog() QLog.LoggerInterface {
 		QLog.WithFileOPT(zLogParam.FilePath, zLogParam.FileName, zLogParam.FileSuffix, zLogParam.FileMaxSize,zLogParam.FileMaxNSize),
 		QLog.WithConsoleOPT(),
 	)
+	funcName,file,_,ok := runtime.Caller(0)
+	fmt.Println(ok,"日志是否正确",funcName,file)
+	if ok {
+		funcName := runtime.FuncForPC(funcName).Name()
+		l.AddTextPrefix("method",funcName)
+	}
+
 	return l
 }
 
