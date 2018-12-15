@@ -144,6 +144,12 @@ func ParseToken(myToken string) (userId string,err error) {
 		ZLog().Error("content","parse token has error","error",err.Error())
 		return "",err
 	}
+
+	if !token.Valid {
+		ZLog().Error("content","token is invalid","error",err.Error())
+		return "",err
+	}
+
 	claims := token.Claims.(jwt.MapClaims)
 
 	sub,ok := claims["sub"].(string)

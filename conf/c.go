@@ -28,7 +28,12 @@ const (
 	JWTJTI = "izghua"
 	JWTSECRETKEY = "izghua"
 	JWTTOKENKEY = "login:token:"
-	JWTTOKENLIFE = time.Hour * time.Duration(7)
+	JWTTOKENLIFE = time.Hour * time.Duration(72)
+
+
+	QCapUrl = "https://ssl.captcha.qq.com/ticket/verify"
+
+
 
 )
 

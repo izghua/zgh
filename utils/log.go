@@ -91,7 +91,6 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 	return nil
 }
 
-
 // the log is designed by my colleague
 // https://github.com/Penglq/QLog
 // i just package it
@@ -99,7 +98,8 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
 	if zLogParam == nil {
-		log.Fatalf("Zlog not init err %s", errors.New("日志没有初始化"))
+		 _ = new(ZLogParam).ZLogInit()
+		log.Fatalf("Zlog not init err %s", errors.New("日志没有初始化,走默认"))
 	}
 	l := QLog.GetLogger()
 	l.SetConfig(QLog.INFO, zLogParam.TimeZone,
