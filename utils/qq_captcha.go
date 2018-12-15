@@ -7,9 +7,9 @@
 package utils
 
 import (
-	"fmt"
 	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/request"
+	"net/http"
 	"time"
 )
 
@@ -60,7 +60,7 @@ type QqCaptchaResponse struct {
 	errMsg string `json:"err_msg"`
 }
 
-func QQCaptchaVerify(ticket string,randStr string,userIP string) {
+func QQCaptchaVerify(ticket string,randStr string,userIP string) (*http.Response,[]error) {
 	resp := new(QqCaptchaResponse)
 	res, _,err := request.New().Get(conf.QCapUrl).
 		Param("aid",qqCaptcha.Aid).
@@ -68,6 +68,6 @@ func QQCaptchaVerify(ticket string,randStr string,userIP string) {
 		Param("Ticket",ticket).
 		Param("Randstr",randStr).
 		Param("UserIP",userIP).
-		Timeout(time.Minute*time.Duration(1)).Type(request.TypeUrlencoded).EndStruct(resp)
-	fmt.Println(res,err)
+		Timeout(time.Minute * 1).Type(request.TypeUrlencoded).EndStruct(resp)
+	return res,err
 }
