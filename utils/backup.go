@@ -7,9 +7,9 @@
 package utils
 
 import (
+	"github.com/izghua/zgh/conf"
+	"github.com/izghua/zgh/conn"
 	"github.com/izghua/zgh/utils"
-	"izghua/zgh/conf"
-	"izghua/zgh/conn"
 	"os"
 	"time"
 )
