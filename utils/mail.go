@@ -7,8 +7,12 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"github.com/izghua/zgh/conf"
+	"io/ioutil"
 	"net/smtp"
 	"strings"
 )
@@ -115,6 +119,88 @@ func (ep *EmailParam)MailInit(options ...EM) error {
 	mailParam = q
 	return nil
 }
+
+
+func SendMail2(to string) error {
+
+	//cc := "test@g9zz.com"
+	sendTo := strings.Split(to, ";")
+
+	subject := "这是一封演示用的邮件"
+	boundary := "next message" //boundary 用于分割邮件内容，可自定义. 注意它的开始和结束格式
+
+	mime := bytes.NewBuffer(nil)
+	user := string(mailParam.User)
+	password := string(mailParam.Password)
+	host := string(mailParam.Host)
+	//auth := smtp.PlainAuth("", user, password, mailAddr)
+	//设置邮件
+	mime.WriteString(fmt.Sprintf("From: %s<%s>\r\nTo: %s\r\nSubject: %s\r\nMIME-Version: 1.0\r\n", user, user, to,  subject))
+	//msg := []byte("To: " + to + "\r\nFrom: " + user + "<" + user + ">\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
+
+	mime.WriteString(fmt.Sprintf("Content-Type: multipart/mixed; boundary=%s\r\n", boundary))
+	mime.WriteString("Content-Description: 这是一封带附档的邮件\r\n")
+
+	//邮件普通Text正文
+	mime.WriteString(fmt.Sprintf("--%s\r\n", boundary))
+	mime.WriteString("Content-Type: text/plain; charset=utf-8\r\n")
+	mime.WriteString("This is a multipart message in MIME format.")
+
+	//邮件HTML正文
+	mime.WriteString(fmt.Sprintf("\n--%s\r\n", boundary))
+
+	boundaryHtml := "boundaryHtml"
+	mime.WriteString(fmt.Sprintf("Content-Type: multipart/alternative; boundary=%s\r\n", boundaryHtml))
+	mime.WriteString("Content-Description: Message in alternative text and HTML forms\r\n")
+	mime.WriteString(fmt.Sprintf("\n--%s\r\n", boundaryHtml))
+	mime.WriteString(fmt.Sprintf("Content-Type: %s; charset=utf-8\r\n", "text/html"))
+	mime.WriteString(`<html><body>
+		<p><img src="https://golang.org/doc/gopher/doc.png"></p><br/>
+		<h1>最近有点消沉,也有点想家了.</h1>
+		</body></html>`)
+	mime.WriteString(fmt.Sprintf("\n--%s--\r\n\r\n", boundaryHtml))
+
+	// 第一个附件
+	attaFile := "./backup"
+	attaFileName := "backup.zip"
+	mime.WriteString(fmt.Sprintf("\n--%s\r\n", boundary))
+	mime.WriteString("Content-Type: application/octet-stream\r\n")
+	mime.WriteString("Content-Description: 附一个Go文件\r\n")
+	mime.WriteString("Content-Transfer-Encoding: base64\r\n")
+	mime.WriteString("Content-Disposition: attachment; filename=\"" + attaFileName + "\"\r\n\r\n")
+	//读取并编码文件内容
+	attaData, err := ioutil.ReadFile(attaFile)
+	if err != nil {
+		return err
+	}
+	b := make([]byte, base64.StdEncoding.EncodedLen(len(attaData)))
+	base64.StdEncoding.Encode(b, attaData)
+	mime.Write(b)
+
+	//第二个附件
+	mime.WriteString(fmt.Sprintf("\r\n--%s\r\n", boundary))
+	mime.WriteString("Content-Type: text/plain\r\n")
+	mime.WriteString("Content-Description: 附一个Text文件\r\n")
+	mime.WriteString("Content-Disposition: attachment; filename=\"test.txt\"\r\n\r\n")
+	mime.WriteString("this is the attachment text")
+
+	//邮件结束
+	mime.WriteString("\r\n--" + boundary + "--\r\n\r\n")
+
+	fmt.Println(mime.String())
+
+	//发送相关
+	//smtpHost, _, err := net.SplitHostPort(host)
+	//if err != nil {
+	//	return err
+	//}
+	auth := smtp.PlainAuth("", user, password, mailAddr)
+	//err := smtp.SendMail(host, auth, user, sendTo, msg)
+
+	return smtp.SendMail(host, auth, user, sendTo, mime.Bytes())
+
+}
+
 
 
 func SendMail( to string, subject string, body string) error {

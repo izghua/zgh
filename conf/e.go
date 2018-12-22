@@ -2,6 +2,7 @@ package conf
 
 
 var message = map[int]string{
+	0 : "成功",
 	100000001: "尚未设置错误码",
 	400000000: "错误哦",
 	400000001: "token失效,请检查后再试",

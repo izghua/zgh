@@ -11,6 +11,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/utils"
+	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -121,4 +122,19 @@ func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
 
 func MySQLAutoConnect() {
 	autoConnectMySQL(0, 5)
+}
+
+
+func SqlDump(fileName string,filePath string) error {
+	err := os.Remove(fileName)
+	if err != nil {
+		utils.ZLog().Error("message","sql dump has error","error",err.Error())
+		return err
+	}
+	err = mysql.DumpAllToFile(filePath+fileName)
+	if err != nil {
+		utils.ZLog().Error("message","sql dump all to file has error","error",err.Error())
+		return err
+	}
+	return nil
 }

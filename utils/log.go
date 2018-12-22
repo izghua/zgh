@@ -11,6 +11,8 @@ import (
 	"github.com/Penglq/QLog"
 	"github.com/izghua/zgh/conf"
 	"log"
+	"runtime"
+	"strings"
 )
 
 type ZLogParam struct {
@@ -111,6 +113,12 @@ func (zlp *ZLogParam)ZLogInit(options ...zp) error {
 // then you must describe it is type
 func ZLog() QLog.LoggerInterface {
 	//TODO:: i want to add prefix for log ,but the package is not written by myself
+	funcName,_,_,ok := runtime.Caller(1)
+	if ok {
+		fName := runtime.FuncForPC(funcName).Name()
+		arrStr := strings.Split(fName,"/")
+		Zog.SetTextPrefix("method",arrStr[len(arrStr)-1])
+	}
 	return Zog
 }
 
