@@ -130,9 +130,10 @@ func SqlDump(fileName string,filePath string) error {
 	err := os.Remove(fileName)
 	if err != nil {
 		zgh.ZLog().Error("message","sql dump has error","error",err.Error())
-		return err
 	}
+
 	err = mysql.DumpAllToFile(filePath+fileName)
+
 	if err != nil {
 		zgh.ZLog().Error("message","sql dump all to file has error","error",err.Error())
 		return err

@@ -38,7 +38,7 @@ type EM  func(*EmailParam) (interface{},error)
 
 func (et EmailType) CheckIsNull() error {
 	if string(et) == "" {
-		//zgh.ZLog().Error("content","value can not be null")
+		zgh.ZLog().Error("message","value can not be null")
 		return errors.New("value can not be null")
 	}
 	return nil

@@ -51,5 +51,5 @@ const (
 	BackUpDest = "./backup"
 	BackUpDuration = time.Hour * 24
 	BackUpSqlFileName = "-sql-backup.sql"
-	BackUpFilePath = "./backup"
+	BackUpFilePath = "./backup/"
 )
