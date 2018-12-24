@@ -11,8 +11,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
 	"github.com/izghua/zgh"
-	"github.com/izghua/zgh/common"
 	"github.com/izghua/zgh/conf"
+	"github.com/izghua/zgh/utils"
 	"time"
 )
 
@@ -118,7 +118,7 @@ func CreateToken(userIdString string) (token string,err error) {
 	claims["iss"] = jwtParam.DefaultIss
 	claims["sub"] = userIdString
 	claims["aud"] = jwtParam.DefaultAudience
-	claims["jti"] = common.Md5(jwtParam.DefaultJti+jwtParam.DefaultIss)
+	claims["jti"] = utils.Md5(jwtParam.DefaultJti+jwtParam.DefaultIss)
 	tk.Claims = claims
 
 	SecretKey := jwtParam.SecretKey

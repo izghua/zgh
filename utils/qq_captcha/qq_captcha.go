@@ -4,7 +4,7 @@
  * Date: 2018-12-15
  * Time: 16:44
  */
-package utils
+package qq_captcha
 
 import (
 	"github.com/izghua/zgh/conf"

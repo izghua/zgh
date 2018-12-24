@@ -7,50 +7,36 @@
 package test
 
 import (
-	"github.com/izghua/zgh"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh/utils/hashid"
+	"github.com/izghua/zgh/utils/mail"
 	"testing"
 )
 
 // the alarm init must be the zlog init first
 // so ...
-func TestAlarm(t *testing.T) {
-	zlog := new(zgh.ZLogParam)
-	err :=zlog.ZLogInit()
-	if err != nil {
-		t.Error("it is err")
-	} else {
-		t.Log("it is right")
-	}
-	alarm := new(utils.AlarmParam)
-	alarmT := alarm.SetType("mail")
-	mailTo := alarm.SetMailTo("xzghua@gmail.com")
-	err = alarm.AlarmInit(alarmT,mailTo)
-	if err != nil {
-		t.Error("it is err")
-	} else {
-		t.Log("it is right")
-	}
-}
+//func TestAlarm(t *testing.T) {
+//	zlog := new(zgh.ZLogParam)
+//	err :=zlog.ZLogInit()
+//	if err != nil {
+//		t.Error("it is err")
+//	} else {
+//		t.Log("it is right")
+//	}
+//	alarm := new(utils.AlarmParam)
+//	alarmT := alarm.SetType("mail")
+//	mailTo := alarm.SetMailTo("xzghua@gmail.com")
+//	err = alarm.AlarmInit(alarmT,mailTo)
+//	if err != nil {
+//		t.Error("it is err")
+//	} else {
+//		t.Log("it is right")
+//	}
+//}
 
 
-func TestZLog(t *testing.T) {
-	zlog := new(zgh.ZLogParam)
-	zlog.FilePath = "./log"
-	zlog.FileSuffix = "zog"
-	zlog.FileName = "zlog"
-	zlog.FileMaxNSize = 1
-	zlog.FileMaxSize = 0
-	err :=zlog.ZLogInit()
-	if err != nil {
-		t.Error("it is err")
-	} else {
-		t.Log("it is right")
-	}
-}
 
 func TestMail(t *testing.T) {
-	mail := new(utils.EmailParam)
+	mail := new(mail.EmailParam)
 	mailUser := mail.SetMailUser("test@test.com")
 	mailPwd := mail.SetMailPwd("test")
 	mailHost :=  mail.SetMailHost("smtp.mxhichina.com:25")
@@ -58,12 +44,12 @@ func TestMail(t *testing.T) {
 	if err != nil {
 		t.Error("it is err MailInit")
 	} else {
-		t.Log("it is right MailInit",err.Error())
+		t.Log("it is right MailInit")
 	}
 }
 
 func TestHashId(t *testing.T) {
-	hd := new(utils.HashIdParams)
+	hd := new(hashid.HashIdParams)
 	salt := hd.SetHashIdSalt("test salt")
 	hdLength := hd.SetHashIdLength(10)
 	_,err := hd.HashIdInit(hdLength,salt)
@@ -73,3 +59,18 @@ func TestHashId(t *testing.T) {
 		t.Log("it is right")
 	}
 }
+
+//func TestZLog(t *testing.T) {
+//	zlog := new(zgh.ZLogParam)
+//	zlog.FilePath = "./log"
+//	zlog.FileSuffix = "zog"
+//	zlog.FileName = "zlog"
+//	zlog.FileMaxNSize = 1
+//	zlog.FileMaxSize = 0
+//	err :=zlog.ZLogInit()
+//	if err != nil {
+//		t.Error("it is err")
+//	} else {
+//		t.Log("it is right")
+//	}
+//}

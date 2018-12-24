@@ -4,7 +4,7 @@
  * Date: 2018-12-04
  * Time: 21:58
  */
-package utils
+package mail
 
 import (
 	"bytes"
@@ -38,7 +38,7 @@ type EM  func(*EmailParam) (interface{},error)
 
 func (et EmailType) CheckIsNull() error {
 	if string(et) == "" {
-		zgh.ZLog().Error("content","value can not be null")
+		//zgh.ZLog().Error("content","value can not be null")
 		return errors.New("value can not be null")
 	}
 	return nil

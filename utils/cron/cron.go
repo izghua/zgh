@@ -4,7 +4,7 @@
  * Date: 2018-12-22
  * Time: 00:41
  */
-package utils
+package cron
 
 import "time"
 

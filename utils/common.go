@@ -7,10 +7,31 @@
 package utils
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 )
+
+var (
+	TimeLocation, _ = time.LoadLocation("Asia/Chongqing") //当地时间
+)
+
+// 返回当前时间格式
+func GetDateTime() string {
+	return time.Now().In(TimeLocation).Format("2006-01-02 15:04:05")
+}
+
+
+func Md5(s string) string {
+	c := md5.New()
+	c.Write([]byte(s))
+	cipherStr := c.Sum(nil)
+	return hex.EncodeToString(cipherStr)
+}
+
 
 // 各种字符串加星
 func HideStar(str string) (result string) {

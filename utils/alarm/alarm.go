@@ -4,12 +4,12 @@
  * Date: 2018-12-04
  * Time: 22:29
  */
-package utils
+package alarm
 
 import (
 	"github.com/go-errors/errors"
 	"github.com/izghua/zgh"
-	"github.com/izghua/zgh/common"
+	"github.com/izghua/zgh/utils/mail"
 	"regexp"
 	"strings"
 )
@@ -139,7 +139,7 @@ func Alarm(content string) {
 				zgh.ZLog().Error("content","邮件接收者不能为空")
 				break
 			}
-			err = SendMail(string(alarmParam.MailTo),"报警",content)
+			err = mail.SendMail(string(alarmParam.MailTo),"报警",content)
 			break
 		case AlarmTypeTwo:
 			break

@@ -11,7 +11,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh/utils/alarm"
 	"os"
 	"time"
 
@@ -114,7 +114,7 @@ func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
 		if mysql.Ping() != nil {
 			message := fmt.Sprintf("数据库连接失败,已重连%d次", tryTimes)
 			zgh.ZLog().Error("mysql",message)
-			go utils.Alarm(message)
+			go alarm.Alarm(message)
 		}
 		tryTimes = autoConnectMySQL(tryTimes, maxTryTimes)
 	}

@@ -4,7 +4,7 @@
  * Date: 2018-12-22
  * Time: 00:47
  */
-package utils
+package zip
 
 import (
 	"archive/zip"

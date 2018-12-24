@@ -4,7 +4,7 @@
  * Date: 2018-12-13
  * Time: 21:29
  */
-package utils
+package hashid
 
 import (
 	"github.com/izghua/zgh"

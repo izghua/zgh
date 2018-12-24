@@ -4,7 +4,7 @@
  * Date: 2018-12-03
  * Time: 21:34
  */
-package utils
+package string
 
 import "crypto/rand"
 

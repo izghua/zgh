@@ -10,13 +10,13 @@ import (
 	"fmt"
 	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/request"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh/utils/qq_captcha"
 	"testing"
 	"time"
 )
 
 func TestRequest(t *testing.T) {
-	resp := new(utils.QqCaptchaResponse)
+	resp := new(qq_captcha.QqCaptchaResponse)
 	res, _,err := request.New().Get(conf.QCapUrl).
 		Param("aid","3333").
 		Param("AppSecretKey","232342").
