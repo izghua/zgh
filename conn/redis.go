@@ -8,8 +8,8 @@ package conn
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
-	"github.com/izghua/zgh/utils"
 )
 
 var redisC *RedisClient
@@ -68,7 +68,7 @@ func (rc *RedisClient)RedisInit(options ...func(*RedisClient) interface{}) (*red
 	_, err := client.Ping().Result()
 
 	if err != nil {
-		utils.ZLog().Error("content","redis client ping is error","error",err.Error())
+		zgh.ZLog().Error("content","redis client ping is error","error",err.Error())
 		return nil,err
 	}
 	//RedisC1 = client

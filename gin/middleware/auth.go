@@ -8,8 +8,9 @@ package ginmiddleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/gin/api"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh/jwt"
 	"net/http"
 )
 
@@ -19,14 +20,14 @@ func Auth() gin.HandlerFunc {
 
 		token := c.Request.Header.Get("x-auth-token")
 		if token == "" {
-			utils.ZLog().Error("method","zgh.ginmiddleware.auth","error","token is null")
+			zgh.ZLog().Error("method","zgh.ginmiddleware.auth","error","token is null")
 			apiG.Response(http.StatusOK,400000001,nil)
 			return
 		}
 
-		userId,err := utils.ParseToken(token)
+		userId,err := jwt.ParseToken(token)
 		if err != nil {
-			utils.ZLog().Error("method","zgh.ginmiddleware.auth","error",err.Error())
+			zgh.ZLog().Error("method","zgh.ginmiddleware.auth","error",err.Error())
 			apiG.Response(http.StatusOK,400000001,nil)
 			return
 		}

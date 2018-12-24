@@ -8,9 +8,9 @@ package test
 
 import (
 	"fmt"
+	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/request"
 	"github.com/izghua/zgh/utils"
-	"izghua/zgh/conf"
 	"testing"
 	"time"
 )

@@ -8,6 +8,8 @@ package utils
 
 import (
 	"github.com/go-errors/errors"
+	"github.com/izghua/zgh"
+	"github.com/izghua/zgh/common"
 	"regexp"
 	"strings"
 )
@@ -42,14 +44,14 @@ func (alarm *AlarmParam)SetType(t AlarmType) ap {
 	return func(alarm *AlarmParam) (interface{},error) {
 		str := strings.Split(string(t),",")
 		if len(str) == 0 {
-			ZLog().Error("content","you must input a value")
+			zgh.ZLog().Error("content","you must input a value")
 			return nil,errors.New("you must input a value")
 		}
 		for _,types := range str {
 			s := AlarmType(types)
 			_,err := s.IsCurrentType()
 			if err != nil {
-				ZLog().Error("content","the value type is error")
+				zgh.ZLog().Error("content","the value type is error")
 				return nil,err
 			}
 		}
@@ -78,7 +80,7 @@ func (alarm *AlarmParam)SetMailTo(t AlarmMailReceive) ap {
 // alarm receive account can not null
 func (t AlarmMailReceive)CheckIsNull() (AlarmMailReceive,error) {
 	if len(t) == 0 {
-		ZLog().Error("content","value can not be null")
+		zgh.ZLog().Error("content","value can not be null")
 		return "",errors.New("value can not be null")
 	}
 	return t,nil
@@ -87,7 +89,7 @@ func (t AlarmMailReceive)CheckIsNull() (AlarmMailReceive,error) {
 // alarm receive account must be mail format
 func (t AlarmMailReceive)MustMailFormat() (AlarmMailReceive,error) {
 	if m, _ := regexp.MatchString("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+", string(t)); !m {
-		ZLog().Error("content","value format is not right")
+		zgh.ZLog().Error("content","value format is not right")
 		return "",errors.New("value format is not right")
 	}
 	return t,nil
@@ -105,7 +107,7 @@ func (at AlarmType)IsCurrentType() (AlarmType,error) {
 	case AlarmTypeThree:
 		return at,nil
 	default:
-		ZLog().Error("content","the alarm type is error")
+		zgh.ZLog().Error("content","the alarm type is error")
 		return at,errors.New("the alarm type is error")
 	}
 }
@@ -134,7 +136,7 @@ func Alarm(content string) {
 		switch AlarmType(a) {
 		case AlarmTypeOne:
 			if alarmParam.MailTo == "" {
-				ZLog().Error("content","邮件接收者不能为空")
+				zgh.ZLog().Error("content","邮件接收者不能为空")
 				break
 			}
 			err = SendMail(string(alarmParam.MailTo),"报警",content)
@@ -145,7 +147,7 @@ func Alarm(content string) {
 			break
 		}
 		if err != nil {
-			ZLog().Error("content","alarm is error,err:" + err.Error())
+			zgh.ZLog().Error("content","alarm is error,err:" + err.Error())
 		}
 	}
 }

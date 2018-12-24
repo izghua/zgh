@@ -7,6 +7,7 @@
 package utils
 
 import (
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
 	"github.com/speps/go-hashids"
 )
@@ -49,7 +50,7 @@ func (hd *HashIdParams)HashIdInit(options ...func(*HashIdParams) interface{}) (*
 	hds.MinLength = hashIdParams.MinLength
 	h, err := hashids.NewWithData(hds)
 	if err != nil {
-		ZLog().Error("content","hash new with data is error","error",err.Error())
+		zgh.ZLog().Error("content","hash new with data is error","error",err.Error())
 		return nil,err
 	}
 	return h,nil

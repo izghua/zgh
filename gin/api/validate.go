@@ -8,7 +8,7 @@ package api
 
 import (
 	"github.com/astaxie/beego/validation"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh"
 	"net/http"
 )
 
@@ -20,7 +20,7 @@ func (g *Gin) Validate(obj validate) bool {
 	valid := validation.Validation{}
 	b, err := valid.Valid(obj)
 	if err != nil {
-		utils.ZLog().Error("message", "valid error", "err", err.Error())
+		zgh.ZLog().Error("message", "valid error", "err", err.Error())
 		g.Response(http.StatusOK, 400000000, nil)
 		return false
 	}

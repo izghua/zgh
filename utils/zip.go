@@ -8,7 +8,7 @@ package utils
 
 import (
 	"archive/zip"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh"
 	"io"
 	"os"
 )
@@ -26,7 +26,7 @@ func Compress(files []*os.File, dest string) error {
 	for _, file := range files {
 		err := compress(file, "", w)
 		if err != nil {
-			utils.ZLog().Error("message","compress the files","error",err.Error())
+			zgh.ZLog().Error("message","compress the files","error",err.Error())
 			return err
 		}
 	}
@@ -36,7 +36,7 @@ func Compress(files []*os.File, dest string) error {
 func compress(file *os.File, prefix string, zw *zip.Writer) error {
 	info, err := file.Stat()
 	if err != nil {
-		utils.ZLog().Error("message","compress the files","error",err.Error())
+		zgh.ZLog().Error("message","compress the files","error",err.Error())
 		return err
 	}
 	if info.IsDir() {
@@ -48,12 +48,12 @@ func compress(file *os.File, prefix string, zw *zip.Writer) error {
 		for _, fi := range fileInfos {
 			f, err := os.Open(file.Name() + "/" + fi.Name())
 			if err != nil {
-				utils.ZLog().Error("message","compress the files","error",err.Error())
+				zgh.ZLog().Error("message","compress the files","error",err.Error())
 				return err
 			}
 			err = compress(f, prefix, zw)
 			if err != nil {
-				utils.ZLog().Error("message","compress the files","error",err.Error())
+				zgh.ZLog().Error("message","compress the files","error",err.Error())
 				return err
 			}
 		}
@@ -61,18 +61,18 @@ func compress(file *os.File, prefix string, zw *zip.Writer) error {
 		header, err := zip.FileInfoHeader(info)
 		header.Name = prefix + "/" + header.Name
 		if err != nil {
-			utils.ZLog().Error("message","compress the files","error",err.Error())
+			zgh.ZLog().Error("message","compress the files","error",err.Error())
 			return err
 		}
 		writer, err := zw.CreateHeader(header)
 		if err != nil {
-			utils.ZLog().Error("message","compress the files","error",err.Error())
+			zgh.ZLog().Error("message","compress the files","error",err.Error())
 			return err
 		}
 		_, err = io.Copy(writer, file)
 		file.Close()
 		if err != nil {
-			utils.ZLog().Error("message","compress the files","error",err.Error())
+			zgh.ZLog().Error("message","compress the files","error",err.Error())
 			return err
 		}
 	}

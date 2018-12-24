@@ -4,12 +4,14 @@
  * Date: 2018-12-14
  * Time: 23:48
  */
-package utils
+package jwt
 
 import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-redis/redis"
+	"github.com/izghua/zgh"
+	"github.com/izghua/zgh/common"
 	"github.com/izghua/zgh/conf"
 	"time"
 )
@@ -116,19 +118,19 @@ func CreateToken(userIdString string) (token string,err error) {
 	claims["iss"] = jwtParam.DefaultIss
 	claims["sub"] = userIdString
 	claims["aud"] = jwtParam.DefaultAudience
-	claims["jti"] = Md5(jwtParam.DefaultJti+jwtParam.DefaultIss)
+	claims["jti"] = common.Md5(jwtParam.DefaultJti+jwtParam.DefaultIss)
 	tk.Claims = claims
 
 	SecretKey := jwtParam.SecretKey
 	tokenString, err := tk.SignedString([]byte(SecretKey))
 	if err != nil {
-		ZLog().Error("content","token create error","error",err.Error())
+		zgh.ZLog().Error("content","token create error","error",err.Error())
 		return "",err
 	}
 
 	err = jwtParam.RedisCache.Set(jwtParam.TokenKey+userIdString,tokenString,jwtParam.TokenLife).Err()
 	if err != nil {
-		ZLog().Error("content","token create error","error",err.Error())
+		zgh.ZLog().Error("content","token create error","error",err.Error())
 		return "",err
 	}
 
@@ -141,12 +143,12 @@ func ParseToken(myToken string) (userId string,err error) {
 		return []byte(jwtParam.SecretKey), nil
 	})
 	if err != nil {
-		ZLog().Error("content","parse token has error","error",err.Error())
+		zgh.ZLog().Error("content","parse token has error","error",err.Error())
 		return "",err
 	}
 
 	if !token.Valid {
-		ZLog().Error("content","token is invalid","error",err.Error())
+		zgh.ZLog().Error("content","token is invalid","error",err.Error())
 		return "",err
 	}
 
@@ -154,26 +156,26 @@ func ParseToken(myToken string) (userId string,err error) {
 
 	sub,ok := claims["sub"].(string)
 	if !ok {
-		ZLog().Error("content","claims duan yan is error","error",err.Error())
+		zgh.ZLog().Error("content","claims duan yan is error","error",err.Error())
 		return "",errors.New("claims duan yan is error")
 	}
 
 	res, err := jwtParam.RedisCache.Get(jwtParam.TokenKey+sub).Result()
 
 	if err != nil {
-		ZLog().Error("content","get token from redis error","error",err.Error())
+		zgh.ZLog().Error("content","get token from redis error","error",err.Error())
 		return "",err
 	}
 
 	if res == "" || res != myToken {
-		ZLog().Error("content","token is invalid","error",err.Error())
+		zgh.ZLog().Error("content","token is invalid","error",err.Error())
 		return "",errors.New("token is invalid")
 	}
 
 	//refresh the token life time
 	err = jwtParam.RedisCache.Set(jwtParam.TokenKey+sub,myToken,jwtParam.TokenLife).Err()
 	if err != nil {
-		ZLog().Error("content","token create error","error",err.Error())
+		zgh.ZLog().Error("content","token create error","error",err.Error())
 		return "",err
 	}
 
@@ -186,19 +188,19 @@ func UnsetToken(myToken string) (bool,error) {
 		return []byte(jwtParam.SecretKey), nil
 	})
 	if err != nil {
-		ZLog().Error("content","parse token has error","error",err.Error())
+		zgh.ZLog().Error("content","parse token has error","error",err.Error())
 		return false,err
 	}
 	claims := token.Claims.(jwt.MapClaims)
 
 	sub,ok := claims["sub"].(string)
 	if !ok {
-		ZLog().Error("content","claims duan yan is error","error",err.Error())
+		zgh.ZLog().Error("content","claims duan yan is error","error",err.Error())
 		return false,errors.New("claims duan yan is error")
 	}
 	err = jwtParam.RedisCache.Del(jwtParam.TokenKey+sub).Err()
 	if err != nil {
-		ZLog().Error("content","unset token has error","error",err.Error())
+		zgh.ZLog().Error("content","unset token has error","error",err.Error())
 		return false,err
 	}
 	return true,nil

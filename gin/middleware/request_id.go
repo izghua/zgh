@@ -2,7 +2,7 @@ package ginmiddleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh"
 	"github.com/satori/go.uuid"
 	"strconv"
 	"time"
@@ -26,14 +26,14 @@ func RequestID(options RequestIDOptions) gin.HandlerFunc {
 		if requestID == "" {
 			s,err := uuid.NewV4()
 			if err != nil {
-				utils.ZLog().Error("message","uuid create  error","error",err.Error())
+				zgh.ZLog().Error("message","uuid create  error","error",err.Error())
 			}
 			requestID = s.String()
 		}
 
 		c.Writer.Header().Set("X-Begin-Time", beginTime)
 		c.Writer.Header().Set("X-Request-Id", requestID)
-		utils.ZLog().Info("Message", "API Request", "header", c.Request.Header)
+		zgh.ZLog().Info("Message", "API Request", "header", c.Request.Header)
 		c.Next()
 	}
 }

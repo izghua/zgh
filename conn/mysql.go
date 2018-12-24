@@ -9,6 +9,7 @@ package conn
 import (
 	"fmt"
 	"github.com/go-xorm/xorm"
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/utils"
 	"os"
@@ -86,7 +87,7 @@ func InitMysql(options ...Sp) (*xorm.Engine,error){
 	dataSourceName := q.UserName + ":" + q.Password + "@/" + q.DataBase + "?charset=utf8"
 	engine, err := xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
-		utils.ZLog().Error("mysql","初始化数据库，创建连接异常:"+err.Error())
+		zgh.ZLog().Error("mysql","初始化数据库，创建连接异常:"+err.Error())
 		return nil,err
 	}
 	engine.TZLocation,_ = time.LoadLocation("Asia/Chongqing")
@@ -112,7 +113,7 @@ func autoConnectMySQL(tryTimes int, maxTryTimes int) int {
 	if tryTimes <= maxTryTimes {
 		if mysql.Ping() != nil {
 			message := fmt.Sprintf("数据库连接失败,已重连%d次", tryTimes)
-			utils.ZLog().Error("mysql",message)
+			zgh.ZLog().Error("mysql",message)
 			go utils.Alarm(message)
 		}
 		tryTimes = autoConnectMySQL(tryTimes, maxTryTimes)
@@ -128,12 +129,12 @@ func MySQLAutoConnect() {
 func SqlDump(fileName string,filePath string) error {
 	err := os.Remove(fileName)
 	if err != nil {
-		utils.ZLog().Error("message","sql dump has error","error",err.Error())
+		zgh.ZLog().Error("message","sql dump has error","error",err.Error())
 		return err
 	}
 	err = mysql.DumpAllToFile(filePath+fileName)
 	if err != nil {
-		utils.ZLog().Error("message","sql dump all to file has error","error",err.Error())
+		zgh.ZLog().Error("message","sql dump all to file has error","error",err.Error())
 		return err
 	}
 	return nil

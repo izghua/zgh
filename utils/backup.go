@@ -7,9 +7,9 @@
 package utils
 
 import (
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/conn"
-	"github.com/izghua/zgh/utils"
 	"os"
 	"time"
 )
@@ -65,13 +65,13 @@ func (bp *BackUpParam)Backup() error {
 
 	err := conn.SqlDump(backUp.FileName,backUp.FilePath)
 	if err != nil {
-		utils.ZLog().Error("message","back up sql dump is error","error",err.Error())
+		zgh.ZLog().Error("message","back up sql dump is error","error",err.Error())
 		return err
 	}
 
 	err = Compress(backUp.Files,backUp.Dest)
 	if err != nil {
-		utils.ZLog().Error("message","back up compress is error","error",err.Error())
+		zgh.ZLog().Error("message","back up compress is error","error",err.Error())
 		return err
 	}
 

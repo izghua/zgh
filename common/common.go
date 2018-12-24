@@ -1,10 +1,11 @@
 /**
  * Created by GoLand.
  * User: xzghua@gmail.com
- * Date: 2018-12-15
- * Time: 00:21
+ * Date: 2018-12-03
+ * Time: 23:55
  */
-package utils
+package common
+
 
 import (
 	"crypto/md5"

@@ -7,6 +7,7 @@
 package test
 
 import (
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/utils"
 	"testing"
 )
@@ -14,7 +15,7 @@ import (
 // the alarm init must be the zlog init first
 // so ...
 func TestAlarm(t *testing.T) {
-	zlog := new(utils.ZLogParam)
+	zlog := new(zgh.ZLogParam)
 	err :=zlog.ZLogInit()
 	if err != nil {
 		t.Error("it is err")
@@ -34,7 +35,7 @@ func TestAlarm(t *testing.T) {
 
 
 func TestZLog(t *testing.T) {
-	zlog := new(utils.ZLogParam)
+	zlog := new(zgh.ZLogParam)
 	zlog.FilePath = "./log"
 	zlog.FileSuffix = "zog"
 	zlog.FileName = "zlog"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-errors/errors"
-	"github.com/izghua/zgh/utils"
+	"github.com/izghua/zgh"
 	"io"
 	"net/http/httputil"
 )
@@ -22,8 +22,8 @@ func RecoveryWithWriter(f func(c *gin.Context, err interface{}), out io.Writer) 
 				goErr := errors.Wrap(err, 3)
 				reset := string([]byte{27, 91, 48, 109})
 				recoverMsg := fmt.Sprintf("panic recovered:\n\n%s%s\n\n%s%s", httprequest, goErr.Error(), goErr.Stack(), reset)
-				utils.ZLog().Error("recover", recoverMsg)
-				utils.Alarm(recoverMsg)
+				zgh.ZLog().Error("recover", recoverMsg)
+				//utils.Alarm(recoverMsg)
 				f(c, err)
 			}
 		}()

@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
-	"github.com/izghua/zgh/utils"
 	"strconv"
 	"time"
 )
@@ -30,7 +30,7 @@ func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 		"message": msg,
 		"data":    data,
 	})
-	utils.ZLog().Info("message", "API Response", "code", errCode, "errMsg", msg, "took", roundedStr)
+	zgh.ZLog().Info("message", "API Response", "code", errCode, "errMsg", msg, "took", roundedStr)
 	g.C.Abort()
 	return
 }

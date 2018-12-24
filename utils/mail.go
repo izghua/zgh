@@ -11,6 +11,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/izghua/zgh"
 	"github.com/izghua/zgh/conf"
 	"io/ioutil"
 	"net/smtp"
@@ -37,7 +38,7 @@ type EM  func(*EmailParam) (interface{},error)
 
 func (et EmailType) CheckIsNull() error {
 	if string(et) == "" {
-		ZLog().Error("content","value can not be null")
+		zgh.ZLog().Error("content","value can not be null")
 		return errors.New("value can not be null")
 	}
 	return nil
@@ -70,7 +71,7 @@ func (ep *EmailParam)SetMailPwd(pwd EmailType) EM {
 func (et EmailType)IsRight() error {
 	arr := strings.Split(string(et),":")
 	if len(arr) != 2 {
-		ZLog().Error("may be is not semicolon")
+		zgh.ZLog().Error("may be is not semicolon")
 		return errors.New("may be is not semicolon")
 	}
 	mailAddr = arr[0]
