@@ -142,10 +142,13 @@ func (ep *EmailParam) SetBody(b EmailType) *EmailParam {
 	return ep
 }
 
+func (ep *EmailParam) SetTo(to EmailType) *EmailParam {
+	ep.To = to
+	return ep
+}
 
 
 func (ep *EmailParam)SendMail2(to string) error {
-	fmt.Println("开始进到邮件了")
 	sendTo := strings.Split(to, ";")
 
 	subject := ep.Subject
@@ -155,10 +158,8 @@ func (ep *EmailParam)SendMail2(to string) error {
 	user := string(ep.User)
 	password := string(ep.Password)
 	host := string(ep.Host)
-	//auth := smtp.PlainAuth("", user, password, mailAddr)
 	//设置邮件
 	mime.WriteString(fmt.Sprintf("From: %s<%s>\r\nTo: %s\r\nSubject: %s\r\nMIME-Version: 1.0\r\n", user, user, to,  subject))
-	//msg := []byte("To: " + to + "\r\nFrom: " + user + "<" + user + ">\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
 
 	mime.WriteString(fmt.Sprintf("Content-Type: multipart/mixed; boundary=%s\r\n", boundary))
 	mime.WriteString("Content-Description: "+ string(ep.Description) +"\r\n")
@@ -179,7 +180,6 @@ func (ep *EmailParam)SendMail2(to string) error {
 	mime.WriteString(string(ep.Body))
 	mime.WriteString(fmt.Sprintf("\n--%s--\r\n\r\n", boundaryHtml))
 
-	fmt.Println("第一个附件")
 
 	fmt.Println(ep.Subject,ep.Attaches,ep.Description,ep.Body,sendTo,host)
 
@@ -194,7 +194,6 @@ func (ep *EmailParam)SendMail2(to string) error {
 		mime.WriteString("Content-Transfer-Encoding: base64\r\n")
 		mime.WriteString("Content-Disposition: attachment; filename=\"" + attaFileName + "\"\r\n\r\n")
 
-		fmt.Println("读取并编码文件内容")
 		//读取并编码文件内容
 		attaData, err := ioutil.ReadFile(attaFile)
 		if err != nil {
@@ -204,7 +203,7 @@ func (ep *EmailParam)SendMail2(to string) error {
 		base64.StdEncoding.Encode(b, attaData)
 		mime.Write(b)
 	}
-
+	//fmt.Println(ep.Subject,"111",ep.Body,"2222",ep.Attaches,"3",to,"4444",ep.Password,"5555",ep.Host,"6666",ep.User)
 	// 第一个附件
 	//attaFile := "./2018-12-25.zip"
 	//attaFileName := "2018-12-25.zip"
@@ -236,17 +235,9 @@ func (ep *EmailParam)SendMail2(to string) error {
 	//邮件结束
 	mime.WriteString("\r\n--" + boundary + "--\r\n\r\n")
 
-
-	//发送相关
-	//smtpHost, _, err := net.SplitHostPort(host)
-	//if err != nil {
-	//	return err
-	//}
 	auth := smtp.PlainAuth("", user, password, mailAddr)
-	//err := smtp.SendMail(host, auth, user, sendTo, msg)
-	fmt.Println(auth)
+
 	return smtp.SendMail(host, auth, user, sendTo, mime.Bytes())
-	//return nil
 }
 
 

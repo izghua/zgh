@@ -11,6 +11,7 @@ import (
 	"github.com/izghua/zgh/conf"
 	"github.com/izghua/zgh/conn"
 	"github.com/izghua/zgh/utils/cron"
+	"github.com/izghua/zgh/utils/mail"
 	"github.com/izghua/zgh/utils/zip"
 	"os"
 	"time"
@@ -62,6 +63,7 @@ type BackUpParam struct {
 	Dest string `json:"dest"`
 	FileName string `json:"file_name"`
 	FilePath string `json:"file_path"`
+	Ep *mail.EmailParam `json:"ep"`
 }
 
 
@@ -122,6 +124,15 @@ func (bp *BackUpParam)doBackUp() {
 	err = zip.Compress(bp.Files,bp.Dest)
 	if err != nil {
 		zgh.ZLog().Error("message","back up compress is error","error",err.Error())
+		return
+	}
+	err = bp.Ep.SetAttaches(bp.Ep.Attaches).
+		SetSubject(bp.Ep.Subject).
+		SetBody(bp.Ep.Body).
+		SendMail2(string(bp.Ep.To))
+	//fmt.Println(bp.Ep.Attaches,bp.Ep.Subject,bp.Ep.Body)
+	if err != nil {
+		zgh.ZLog().Error("message","back up send mail is error","error",err.Error())
 		return
 	}
 	return
