@@ -40,7 +40,7 @@ func TestMail(t *testing.T) {
 	mailUser := mail.SetMailUser("test@test.com")
 	mailPwd := mail.SetMailPwd("test")
 	mailHost :=  mail.SetMailHost("smtp.mxhichina.com:25")
-	err := mail.MailInit(mailPwd,mailHost,mailUser)
+	_,err := mail.MailInit(mailPwd,mailHost,mailUser)
 	if err != nil {
 		t.Error("it is err MailInit")
 	} else {

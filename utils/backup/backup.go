@@ -17,10 +17,20 @@ import (
 )
 
 
+func (bp *BackUpParam) SetFiles(files ...string) *BackUpParam  {
+	var fileArr []*os.File
+	var f *os.File
+	var err error
+	defer f.Close()
+	for _,v := range files {
+		f, err = os.Open(v)
+		if err != nil {
+			zgh.ZLog().Error("error",err.Error())
+		}
+		fileArr = append(fileArr,f)
+	}
 
-
-func (bp *BackUpParam) SetFiles(f []*os.File) *BackUpParam  {
-	bp.Files = f
+	bp.Files = fileArr
 	return bp
 }
 
@@ -43,6 +53,8 @@ func (bp *BackUpParam) SetFilePath(fp string) *BackUpParam {
 	bp.FilePath = fp
 	return bp
 }
+
+
 
 type BackUpParam struct {
 	Files  []*os.File `json:"files"`
