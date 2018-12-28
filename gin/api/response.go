@@ -13,9 +13,12 @@ type Gin struct {
 	C *gin.Context
 }
 
+type ds struct {
+}
+
 func (g *Gin) Response(httpCode, errCode int, data interface{}) {
 	if data == nil {
-		data = []string{}
+		data = ds{}
 	}
 	msg := conf.GetMsg(errCode)
 	beginTime, _ := strconv.ParseInt(g.C.Writer.Header().Get("X-Begin-Time"), 10, 64)
