@@ -1910,7 +1910,7 @@ func TestNotFound(t *testing.T) {
 }
 
 func TestApi(t *testing.T) {
-	response, body, errs := New().SetWorkerId("worker-id").Timeout(time.Second * 5).Get("http://yrb-api-operations.kpl.yixinonline.org/app/v1/shares").Query("content=1").End()
+	response, body, errs := New().SetWorkerId("worker-id").Timeout(time.Second * 5).Get("https://ww.iphpt.com").Query("content=1").End()
 	t.Logf("response %#v \n body %s \n errors %+v \n", response, body, errs)
 	type rStruct struct {
 		Code    int         `json:"code"`
@@ -1938,7 +1938,7 @@ func TestApi(t *testing.T) {
 		Message string      `json:"message"`
 	}
 	var bodyStruct rStruct1
-	response, _, errs = New().SetWorkerId("worker-id").Timeout(time.Second * 5).Get("http://yrb-api-operations.kpl.yixinonline1.org/app/v1/shares").Query("content=1").EndStruct(&bodyStruct)
+	response, _, errs = New().SetWorkerId("worker-id").Timeout(time.Second * 5).Get("http://www.iphpt.com").Query("content=1").EndStruct(&bodyStruct)
 	if len(errs) > 0 {
 		t.Fatalf("endStruct error: %s", errs)
 		return
