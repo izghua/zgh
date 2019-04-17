@@ -9,18 +9,16 @@ package ginmiddleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/izghua/zgh/gin/api"
-	"net/http"
 )
 
 func Permission(routerAsName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		apiG := api.Gin{C: c}
+		//apiG := api.Gin{C: c}
 		fmt.Println(routerAsName)
-		if routerAsName == "" {
-			apiG.Response(http.StatusOK,0,nil)
-			return
-		}
+		//if routerAsName == "" {
+		//	apiG.Response(http.StatusOK,0,nil)
+		//	return
+		//}
 		c.Next()
 	}
 }

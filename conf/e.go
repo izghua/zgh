@@ -11,6 +11,12 @@ var message = map[int]string{
 
 }
 
+func SetMsg(msg map[int]string) {
+	for k,v := range msg {
+		message[k] = v
+	}
+}
+
 func GetMsg(code int) string {
 	if msg, ok := message[code]; ok {
 		return msg
