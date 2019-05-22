@@ -7,9 +7,11 @@
 package test
 
 import (
+	"github.com/izghua/zgh/utils/cron"
 	"github.com/izghua/zgh/utils/hashid"
 	"github.com/izghua/zgh/utils/mail"
 	"testing"
+	"time"
 )
 
 // the alarm init must be the zlog init first
@@ -74,3 +76,7 @@ func TestHashId(t *testing.T) {
 //		t.Log("it is right")
 //	}
 //}
+
+func TestZgCron(t *testing.T) {
+	cron.ZgCron(5*time.Second, func() {})
+}
