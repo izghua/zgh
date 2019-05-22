@@ -40,8 +40,8 @@ func (bp *BackUpParam) SetDest(d string) *BackUpParam  {
 	return bp
 }
 
-func (bp *BackUpParam) SetDuration(d time.Duration) *BackUpParam {
-	bp.Duration = d
+func (bp *BackUpParam) SetCronSpec(d string) *BackUpParam {
+	bp.CronSpec = d
 	return bp
 }
 
@@ -59,7 +59,7 @@ func (bp *BackUpParam) SetFilePath(fp string) *BackUpParam {
 
 type BackUpParam struct {
 	Files  []*os.File `json:"files"`
-	Duration time.Duration `json:"duration"`
+	CronSpec string `json:"cronSpec"`
 	Dest string `json:"dest"`
 	FileName string `json:"file_name"`
 	FilePath string `json:"file_path"`
@@ -92,9 +92,9 @@ func (bp *BackUpParam)FileNameIsNull() *BackUpParam {
 }
 
 func (bp *BackUpParam)DurationIsNull() *BackUpParam {
-	if bp.Duration == 0 {
+	if bp.CronSpec == "" {
 		zgh.ZLog().Warn("message","data is null")
-		bp.SetDuration(conf.BackUpDuration)
+		bp.SetCronSpec(conf.BackUpDuration)
 	}
 	return bp
 }
@@ -110,7 +110,7 @@ func (bp *BackUpParam)Backup() error {
 	//fmt.Println("目标目录Dest",backUp.Dest)
 	//
 	////fmt.Println(backUp.FileName,backUp.FilePath,"看问题",backUp.Duration)
-	cron.ZgCron(bp.Duration,bp.doBackUp)
+	cron.ZgCron(bp.CronSpec,bp.doBackUp)
 
 	return nil
 }
