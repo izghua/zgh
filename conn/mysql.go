@@ -128,7 +128,7 @@ func MySQLAutoConnect() {
 
 func SqlDump(fileName string,filePath string) error {
 	zgh.ZLog().Info("message","sql dump file","name",fileName,"path",filePath)
-	err := os.Remove(fileName)
+	err := os.Remove(filePath+fileName)
 	if err != nil {
 		zgh.ZLog().Error("message","sql dump has error","error",err.Error())
 	}
