@@ -24,10 +24,10 @@ func RequestID(options RequestIDOptions) gin.HandlerFunc {
 		}
 
 		if requestID == "" {
-			s,err := uuid.NewV4()
-			if err != nil {
-				zgh.ZLog().Error("message","uuid create  error","error",err.Error())
-			}
+			s := uuid.NewV4()
+			//if err != nil {
+			//	zgh.ZLog().Error("message","uuid create  error","error",err.Error())
+			//}
 			requestID = s.String()
 		}
 
