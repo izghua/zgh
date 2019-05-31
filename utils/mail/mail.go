@@ -203,7 +203,9 @@ func (ep *EmailParam)SendMail2(to string) error {
 	zgh.ZLog().Info("message","mail to the last")
 	mime.WriteString("\r\n--" + boundary + "--\r\n\r\n")
 	auth := smtp.PlainAuth("", user, password, mailAddr)
-	return smtp.SendMail(host, auth, user, sendTo, mime.Bytes())
+	err := smtp.SendMail(host, auth, user, sendTo, mime.Bytes())
+	zgh.ZLog().Info("message","mail to the last","last",err)
+	return err
 }
 
 
@@ -225,6 +227,7 @@ func SendMail( to string, subject string, body string) error {
 	msg = []byte(subject + contentType + body)
 	sendTo := strings.Split(to, ";")
 	err := smtp.SendMail(host, auth, user, sendTo, msg)
+	zgh.ZLog().Info("message","SendMail","last",err)
 	return err
 }
 
